@@ -33,11 +33,11 @@ app.use('/create', (req, res) => {
 
 app.use('/checkLogin', (req, res) => {
     var queryUser = {};
-    if (req.body.username) {
-        queryUser = {"username" : req.body.username};
-        if (req.body.password) {
-            queryUser = {"password" : req.body.password};
-        } 
+    if (req.body.username && req.body.password) {
+        queryUser = {"username" : req.body.username, 
+                    "password" : req.body.password};
+    } else {
+        res.redirect('/');
     } 
     
     User.find(queryUser, (err, users) => {
