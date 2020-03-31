@@ -1,0 +1,48 @@
+README for website
+
+summary of files and what they are:
+
+	mainLogin.js -> This is the main javascript file that uses node express to connect and to load the website up. It holds all functionality and is the only file to talk to the database. 
+		*important* it has a variable called currentUser that holds the User object of the user who logged in after someone logged in
+		TODO: forgot to change currentUser to null once someone logged out. also to add functionality to the adding staff to a hospital form.
+
+	User.js -> This is the schema for the database. It will obviously be changed because it is quite crude and only used for the purposes of Morgan's story points
+		TODO: come up with a more robust Schema for the user
+
+	/public/login.html -> This is the login page, and is the only html file (everything else is an embedded javascript template, or ejs). It doesn't do much other than hold the form that makes the call to /checkUserLogin in mainLogin.js after someone entered their login information.
+
+	/public/stylesLogin.css -> Just the stylesheet to make the login page look pretty.
+
+	/styles/stylesDashboard.css -> The stylesheet to make the dashboard pages look pretty.
+
+	/views/differentDashboard.ejs -> This is an embedded javascript template, so it's basically html until this symbol, <% (something) %> shows up. The inside of this is javascript. This file gets rendered in mainLogin.js, under the /checkUserLogin function, as well as whenever someone presses the "Home" button at the top of the screen. 
+
+	/views/myHospital.ejs -> This is an embedded javascript template that gets called whenever someone presses the "My Hospital" button at the top of the dashboard screen. It looks different depending on whether the user is a hospital owner or not. 
+		TODO: finish the functionality of when the user is a hospital owner
+
+In general I have to make everything look prettier.
+
+To run this code: 
+
+install a mongodb on your computer like the node-setup.pdf says under project files on canvas. Create a folder for the data for your database to go
+
+under the /bin folder of your mongodb folder (what you downloaded) type:
+	./mongod --dbpath= 
+	and then add the exact path to that folder for the data that you created before
+
+Then, in a different tab on terminal or command line, navigate to the folder containing my files from git. Make sure you install node into these folders following the node-setup.pdf again. Then type
+	node mainLogin.js
+
+If you then go to a browser and type 
+	http://localhost:3000
+
+The login screen should show up.
+
+To add yourself to the database you have to go back and edit my files. But be sure to change what you changed in the first place because we are not supposed to be able to create accounts from the website. 
+
+on the login.html file, there is a single form, change the form action from "/checkLogin" to "/create"
+
+Run the application as before, and when you press login it doesn't log you in, it instead creates an account with the username and password you entered. If you reverse the change from above, you can then use the username and password from before to enter the website to see the dashboard (be careful it does not look pretty at all).
+
+If you have questions or problems, feel free to reach out to me. 
+-Morgan

@@ -1,0 +1,28 @@
+#titleAndLogin {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background-color: darkseagreen;
+    color: white;
+}
+
+#enterInformation {
+    display: table;
+    margin: 0 auto;
+}
+
+.loginTitle {
+    text-align: center;
+}
+
+#loginDisclaimer {
+    text-align: center;
+}
+
+#ifWrongLogin {
+    color: indianred;
+}
+

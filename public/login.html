@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <script src="mainLogin.js"></script>
+        <link rel="stylesheet" type="text/css" href="stylesLogin.css">
+        <title>Vaccine App!</title>
+    </head>
+    
+    <body id="body">
+
+        <div id="titleAndLogin"> 
+            <h1 class="loginTitle">Welcome to our vaccine app!</h1> 
+            
+            <h4 class="loginTitle">which is weirdly ironic because we are now in a <font color="darkgreen">~pandemic~</font>
+            </h4>
+            
+            <div id="enterInformation">
+                
+                <form action="/checkLogin" method="post">
+                    <label for="enterUsername">Username: </label> <br>
+                    
+                    <input type="text" name="username"> <br>
+                    
+                    <label for="enterPassword">Password: </label> <br>
+                    
+                    <input type="password" name="password"> <br>
+                    
+                    <input type="submit" value="Login">
+                </form>
+                
+            </div>
+            
+            <p id="ifWrongLogin" style = "visibility: hidden;">You entered the wrong username or password.</p>
+            
+            <p id="loginDisclaimer">If you do not have an account with us, please download the application to create an account.</p>  
+        </div>
+        
+    </body>
+
+</html>
