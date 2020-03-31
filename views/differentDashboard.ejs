@@ -15,22 +15,16 @@
     <main>
         <h1>Me!</h1>
         
-        <% if (Array.isArray(user)) {%>
-            <emph>Name: </emph> <%= user[0].username %>
-            <br> 
-            <emph>Is hospital owner: </emph> <% if (user[0].isHospitalOwner) {%>
-            <p>Yes</p>
-            <%} else {%>
-            <p> no </p>
-            <%} %>
-        <%} else { %>
-            <emph>Name: </emph> <%= user.username %>
-            <br> 
-            <emph>Is hospital owner: </emph> <% if (user.isHospitalOwner) {%>
-            <p>Yes</p>
-            <%} else {%>
-            <p> no </p>
-            <%} %>
+        <b>Name: </b> <%= user.username %> <br>
+        <b>Is hospital owner? </b><% if (user.hospitalOwner) {%>
+        Yes
+        <%} else {%>
+        No
+        <%} %> <br>
+        <b>Is medical account? </b> <% if (user.medicalAccount) {%>
+        Yes
+        <%} else {%>
+        No
         <%} %>
     </main>
 

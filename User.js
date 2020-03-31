@@ -10,8 +10,9 @@ var userSchema = new Schema({
     password: {type: String, required: true},
     hospitalOwner: Boolean,
     numberOfStaff: Number,
-    //this will be an array of usernames of the staff (since usernames are unique)
-    staffArray: String
+    //this will be an array of Users of the staff (since usernames are unique)
+    staffArray: this,
+    medicalAccount: Boolean
 });
 
 //export userschema as a class called User
