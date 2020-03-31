@@ -10,28 +10,28 @@
     <body id="body">
 
         <div id="titleAndLogin"> 
-            <h1 class="loginTitle">Welcome to our vaccine app</h1> 
+            <h1 class="loginTitle">Welcome to our vaccine app!</h1> 
             
-            <h4 class="loginTitle">which is weirdly ironic because we are now in a <font color="lightgreen">~pandemic~</font>
+            <h4 class="loginTitle">which is weirdly ironic because we are now in a <font color="darkgreen">~pandemic~</font>
             </h4>
             
             <div id="enterInformation">
                 
-                <form>
+                <form action="/checkLogin" method="post">
                     <label for="enterUsername">Username: </label> <br>
                     
-                    <input type="text" id="enterUsername" value="username"> <br>
+                    <input type="text" name="username"> <br>
                     
                     <label for="enterPassword">Password: </label> <br>
                     
-                    <input type="password" id="enterPassword"> <br>
+                    <input type="password" name="password"> <br>
                     
-                    <button onclick="return loginButtonClick()">Login</button>
+                    <input type="submit" value="Login">
                 </form>
                 
             </div>
             
-            <p id="ifWrongLogin">You entered the wrong username or password.</p>
+            <p id="ifWrongLogin" style = "visibility: hidden;">You entered the wrong username or password.</p>
             
             <p id="loginDisclaimer">If you do not have an account with us, please download the application to create an account.</p>  
         </div>

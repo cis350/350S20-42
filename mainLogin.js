@@ -1,20 +1,100 @@
 //this is the part that connects to the database through express
-//var express = require('express');
-//var app = express();
+var express = require('express');
+var app = express();
 
-//var User = require('./User.js');
+app.set('view engine', 'ejs');
 
-//app.use('')
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
 
-function loginButtonClick() {
+var User = require('./User.js');
+
+app.use('/create', (req, res) => {
     
-    //var username = document.getElementById('enterUsername').getAttribute('value');
-    //var password = document.getElementById('enterPassword').getAttribute('value');
+    var newPerson = new User({
+        username: req.body.username,
+        password: req.body.password,
+    });
+        
+    newPerson.save( (err) => {
+        if (err) {
+            res.type('html').status(200);
+            res.write('uh oh: ' + err);
+            console.log(err);
+            res.end();
+        } else {
+            res.write('created');
+            console.log('created this bitch' + newPerson.username + ' ' + newPerson.password);           
+        }
+    });
+});
+
+app.use('/checkLogin', (req, res) => {
+    var queryUser = {};
+    if (req.body.username) {
+        queryUser = {"username" : req.body.username};
+        if (req.body.password) {
+            queryUser = {"password" : req.body.password};
+        } else {
+            changeVisibility();
+        }
+    } else {
+        changeVisibility();
+    }
     
-    //so we need to check if they're in the database and if they are it needs to point to the dashboard. 
-    window.location.href='/dashboard.html';
-    return false;
-    
-    //if they're not they need to point to the same form but needs to add another element to the mix -> change the visibility of ifWrongLogin to visible. 
-    
+    User.find(queryUser, (err, users) => {
+        if (err) {
+            console.log('uh oh' + err);
+            res.json({});
+        } else if (users.length == 0) {
+            res.json({});
+        } else {
+            var returnArray = [];
+            users.forEach( (user) => {
+                returnArray.push(user);
+            });
+            
+            console.log('made it here');
+            if (returnArray) {
+                console.log('logged in');
+                //changePage();
+                res.render('differentDashboard', {user: returnArray});
+            } else {
+                console.log('failed');
+                res.redirect('/public/login.html');
+            }
+        }
+    });
+});
+
+/*function changePage() {
+    window.redirect('/dashboard.html');
 }
+
+function changeVisibility() {
+    window.redirect('/login.html');
+    var errorText = document.getElementById('ifWrongLogin');
+    errorText.setAttribute('style', 'visibility: visible');
+}*/
+
+app.get('/home', function (req, res) {
+    res.redirect('differentDashboard.ejs');
+});
+
+app.get('/myHospital', function (req, res) {
+    res.redirect('myHospital.ejs');
+});
+
+app.get('/logout', function (req, res) {
+    res.redirect('../public/login.html');
+});
+
+app.use('/public', express.static('public'));
+
+app.use('/', (req, res) => {res.redirect('/public/login.html');
+                           console.log('here');
+});
+
+app.listen(3000, () => {
+    console.log('Listening on port 3000');
+});

@@ -5,6 +5,8 @@
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
+    background-color: darkseagreen;
+    color: white;
 }
 
 #enterInformation {
@@ -21,6 +23,6 @@
 }
 
 #ifWrongLogin {
-    visibility: hidden;
-    color: red;
+    color: indianred;
 }
+
