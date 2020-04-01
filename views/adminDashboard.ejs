@@ -1,0 +1,25 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Admin Dashboard</title>
+</head>
+
+<body class="container">
+    <div class="topnav">
+        <a class="active" href="/adminhome">Home</a>
+        <a href="/accountchange">Medical Accounts</a>
+        <a href="/">Logout</a>
+    </div>
+
+    <main>
+        <h1>Welcome to the admin page! You think you're pretty special huh?</h1>
+            <emph>Name: </emph> <%= user.username %>
+            <br>
+            <emph>Is hospital owner: </emph> <% if (user.isHospitalOwner) {%>
+            <p>Yes</p>
+            <%} else {%>
+            <p> no </p>
+            <%} %>
+    </main>
+
+</body>
