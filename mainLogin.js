@@ -7,7 +7,9 @@ app.set('view engine', 'ejs');
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
-var User = require('./User.js');
+var schemas = require('./User.js');
+var User = schemas.userModel;
+var MedicalRequest = schemas.medRequestModel;
 
 var currentUser = null;
 
@@ -25,7 +27,7 @@ User.find(adminUser, (err, users) => {
         users.forEach( (user) => {
             returnArray.push(user);
         });
-        
+
         if (returnArray.length == 0) {
           adminUser.save( (err) => {
             if (err) {
@@ -41,12 +43,12 @@ User.find(adminUser, (err, users) => {
 //********************************testing purposes only***************
 
 app.use('/create', (req, res) => {
-    
+
     var newPerson = new User({
         username: req.body.username,
         password: req.body.password,
     });
-        
+
     newPerson.save( (err) => {
         if (err) {
             res.type('html').status(200);
@@ -88,7 +90,7 @@ app.use('/beMedicalAccount', (req, res) => {
 app.use('/checkLogin', (req, res) => {
     var queryUser = {};
     if (req.body.username && req.body.password) {
-        queryUser = {"username" : req.body.username, 
+        queryUser = {"username" : req.body.username,
                     "password" : req.body.password};
         User.findOne({username : queryUser.username, password: queryUser.password}, (err, user) => {
             if (err) {
@@ -107,11 +109,15 @@ app.use('/checkLogin', (req, res) => {
         });
     } else {
         res.redirect('/');
-    } 
+    }
 });
 
 app.get('/home', function (req, res) {
     res.render('differentDashboard', {user: currentUser});
+});
+
+app.get('/medicalrequest', function (req, res) {
+    res.render('upgradeRequest', {user: currentUser, sent: 'false'});
 });
 
 app.get('/adminhome', function (req, res) {
@@ -151,7 +157,7 @@ app.use('/addStaff', (req, res) => {
                            res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
                        }
                     });
-                    
+
                 }
             }
         });
@@ -200,6 +206,14 @@ app.use('/removeStaff', (req, res) => {
         });
     } else {
         res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
+    }
+});
+
+app.use('/createMedRequest', (req, res) => {
+    if (req.body.input) {
+        res.render('upgradeRequest', {user: currentUser, sent: req.body.input});
+    } else {
+        res.render('upgradeRequest', {user: currentUser, sent: 'true'});
     }
 });
 
