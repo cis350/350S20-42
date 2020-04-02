@@ -1,0 +1,57 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Dashboard</title>
+</head>
+
+<style>
+.btn {
+  background-color: inherit;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Green */
+.info {
+  color: green;
+}
+
+.info:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* Red */
+.reject {
+  color: red;
+}
+
+.reject:hover {
+  background: #f44336;
+  color: white;
+}
+
+</style>
+
+<body class="container">
+    <div class="topnav">
+        <a href="/home">Home</a>
+        <a href="/myHospital">My Hospital</a>
+        <a class="active" href="/medicalrequest">Medical Upgrade</a>
+        <a href="/">Logout</a>
+    </div>
+
+    <main>
+        <h1>Submit a Medical Account Request</h1>
+        <%= sent %> <br>
+        <textarea form = "request"
+                  id = "input"
+                  rows = "3"
+                  cols = "80"> State your case</textarea> <br>
+        <form action="/createMedRequest" id="request" method="post">
+        <input type="submit" class="btn info" value="Submit">
+        </form>
+
+    </main>
+
+</body>
