@@ -25,8 +25,8 @@ User.find(adminUser, (err, users) => {
         users.forEach( (user) => {
             returnArray.push(user);
         });
-
-        if (!returnArray) {
+        
+        if (returnArray.length == 0) {
           adminUser.save( (err) => {
             if (err) {
               console.log(err);
@@ -38,13 +38,15 @@ User.find(adminUser, (err, users) => {
     }
 });
 
-app.use('/create', (req, res) => {
+//********************************testing purposes only***************
 
+app.use('/create', (req, res) => {
+    
     var newPerson = new User({
         username: req.body.username,
         password: req.body.password,
     });
-
+        
     newPerson.save( (err) => {
         if (err) {
             res.type('html').status(200);
@@ -53,15 +55,40 @@ app.use('/create', (req, res) => {
             res.end();
         } else {
             res.write('created');
-            console.log('created this bitch' + newPerson.username + ' ' + newPerson.password);
+            console.log('created this dude ' + newPerson.username + ' ' + newPerson.password);
+            res.end();
         }
     });
 });
 
+app.use('/beHospitalOwner', (req, res) => {
+    currentUser.hospitalOwner = true;
+    currentUser.save( (err) => {
+        if (err) {
+            res.json({'status' : err});
+        } else {
+            res.render('differentDashboard', {user: currentUser});
+        }
+    });
+});
+
+app.use('/beMedicalAccount', (req, res) => {
+    currentUser.medicalAccount = true;
+    currentUser.save( (err) => {
+        if (err) {
+            res.json({'status' : err});
+        } else {
+            res.render('differentDashboard', {user: currentUser});
+        }
+    });
+});
+
+//**********************************************************************
+
 app.use('/checkLogin', (req, res) => {
     var queryUser = {};
     if (req.body.username && req.body.password) {
-        queryUser = {"username" : req.body.username,
+        queryUser = {"username" : req.body.username, 
                     "password" : req.body.password};
         User.findOne({username : queryUser.username, password: queryUser.password}, (err, user) => {
             if (err) {
@@ -71,7 +98,7 @@ app.use('/checkLogin', (req, res) => {
                 res.redirect('/');
             } else {
                 currentUser = user;
-                if (currentUser.username=="administrator") {
+                if (currentUser.username == "administrator") {
                     res.render('adminDashboard', {user: currentUser});
                 } else {
                     res.render('differentDashboard', {user: currentUser});
@@ -80,9 +107,7 @@ app.use('/checkLogin', (req, res) => {
         });
     } else {
         res.redirect('/');
-    }
-
-
+    } 
 });
 
 app.get('/home', function (req, res) {
@@ -95,7 +120,7 @@ app.get('/adminhome', function (req, res) {
 
 app.get('/accountchange', function (req, res) {
     res.render('upgradeAccounts', {user: currentUser});
-})
+});
 
 app.use('/myHospital', (req, res) => {
     res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
@@ -126,7 +151,7 @@ app.use('/addStaff', (req, res) => {
                            res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
                        }
                     });
-
+                    
                 }
             }
         });
