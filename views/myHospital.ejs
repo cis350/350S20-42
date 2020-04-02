@@ -1,4 +1,3 @@
-
 <head>
     <script src="../mainLogin.js"></script>
     <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
@@ -10,24 +9,24 @@
         <a href="/home">Home</a>
         <a class="active" href="/myHospital">My Hospital</a>
         <a href="/myRequests">My Requests</a>
-        <a href="/medicalRequest">Medical Request</a>
+        <a href="/medicalRequest">Medical Upgrade</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
         <h1>My Hospital</h1>
-        
+
         <form action="/beHospitalOwner" method="post">
             <input type="submit" value="Click to be Hospital Owner">
         </form>
-        
+
         <form action="/beMedicalAccount" method="post">
             <input type="submit" value="Click to be Medical Account">
         </form>
-        
+
         <% if (user.hospitalOwner) {%>
             <p>Hospital name: </p>
-        <p>My staff: 
+        <p>My staff:
             <% if (staff) { %>
                 You currently have <%= staff.length %> staff member(s).
                     <% if (staff.length > 0) { %>
@@ -37,8 +36,8 @@
                     <% } %>
             <% } else { %>
                 You currently have no staff. Enter information in the form below to add staff!
-        <% } %></p> 
-        
+        <% } %></p>
+
             <div class="row">
                 <div class="column">
                     <p> Add Staff: </p>
