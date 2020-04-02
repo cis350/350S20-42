@@ -117,7 +117,15 @@ app.get('/home', function (req, res) {
 });
 
 app.get('/medicalrequest', function (req, res) {
-    res.render('upgradeRequest', {user: currentUser, sent: 'false'});
+    res.render('upgradeRequest', {user: currentUser, sent: ""});
+});
+
+app.use('/createMedRequest', (req, res) => {
+    if (req.body.input) {
+        res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
+    } else {
+        res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
+    }
 });
 
 app.get('/adminhome', function (req, res) {
@@ -206,14 +214,6 @@ app.use('/removeStaff', (req, res) => {
         });
     } else {
         res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
-    }
-});
-
-app.use('/createMedRequest', (req, res) => {
-    if (req.body.input) {
-        res.render('upgradeRequest', {user: currentUser, sent: req.body.input});
-    } else {
-        res.render('upgradeRequest', {user: currentUser, sent: 'true'});
     }
 });
 
