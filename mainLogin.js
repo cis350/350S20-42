@@ -122,7 +122,21 @@ app.get('/medicalrequest', function (req, res) {
 
 app.use('/createMedRequest', (req, res) => {
     if (req.body.input) {
-        res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
+        var newRequest = new MedicalRequest({	        res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
+          creator: currentUser,	
+          description: req.body.input,	
+      });	
+
+      newRequest.save( (err) => {	
+          if (err) {	
+              console.log(err);	
+              res.end();	
+          } else {	
+              console.log('logged the request');	
+          }	
+      });	
+
+      res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
     } else {
         res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
     }
@@ -216,6 +230,20 @@ app.use('/removeStaff', (req, res) => {
         res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
     }
 });
+
+app.get('/myRequests', function (req, res) {	
+    MedicalRequest.find( (err, allRequests) => {	
+      if (err) {	
+          console.log(err);	
+          res.end();	
+      } else if (allRequests.length == 0) {	
+          res.render('myRequests', {user: currentUser, requests: null});	
+      } else {	
+          res.render('myRequests', {user: currentUser, requests: allRequests});	
+      }	
+    });	
+});	
+
 
 app.use('/public', express.static('public'));
 
