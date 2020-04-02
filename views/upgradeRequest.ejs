@@ -13,7 +13,8 @@
 
 /* Green */
 .info {
-  color: green;
+  background-color: black;
+  color: white;
 }
 
 .info:hover {
@@ -43,14 +44,14 @@
 
     <main>
         <h1>Submit a Medical Account Request</h1>
-        <%= sent %> <br>
-        <textarea form = "request"
-                  id = "input"
-                  rows = "3"
-                  cols = "80"> State your case</textarea> <br>
+        <p>State your case:</p>
         <form action="/createMedRequest" id="request" method="post">
-        <input type="submit" class="btn info" value="Submit">
+          <textarea name = "input"
+                    rows = "3"
+                    cols = "80"></textarea> <br>
+          <input type="submit" class="btn info" value="Submit">
         </form>
+        <%= sent %> <br>
 
     </main>
 
