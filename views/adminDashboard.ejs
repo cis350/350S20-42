@@ -13,12 +13,12 @@
 
     <main>
         <h1>Welcome to the admin page! You think you're pretty special huh?</h1>
-            <emph>Name: </emph> <%= user.username %>
+            <b>Name: </b> <%= user.username %>
             <br>
-            <emph>Is hospital owner: </emph> <% if (user.isHospitalOwner) {%>
-            <p>Yes</p>
+            <b>Is hospital owner: </b> <% if (user.isHospitalOwner) {%>
+            <span style="font-family: sans-serif">Yes</span>
             <%} else {%>
-            <p> no </p>
+            <span style="font-family: sans-serif">No</span>
             <%} %>
     </main>
 

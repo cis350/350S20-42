@@ -1,3 +1,4 @@
+
 <head>
     <script src="../mainLogin.js"></script>
     <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
@@ -8,25 +9,24 @@
     <div class="topnav">
         <a href="/home">Home</a>
         <a class="active" href="/myHospital">My Hospital</a>
-        <a href="/myRequests">My Requests</a>
-        <a href="/medicalrequest">Medical Upgrade</a>
+        <a href="/medicalRequest">Medical Request</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
         <h1>My Hospital</h1>
-
+        
         <form action="/beHospitalOwner" method="post">
             <input type="submit" value="Click to be Hospital Owner">
         </form>
-
+        
         <form action="/beMedicalAccount" method="post">
             <input type="submit" value="Click to be Medical Account">
         </form>
-
+        
         <% if (user.hospitalOwner) {%>
             <p>Hospital name: </p>
-        <p>My staff:
+        <p>My staff: 
             <% if (staff) { %>
                 You currently have <%= staff.length %> staff member(s).
                     <% if (staff.length > 0) { %>
@@ -36,23 +36,28 @@
                     <% } %>
             <% } else { %>
                 You currently have no staff. Enter information in the form below to add staff!
-        <% } %></p>
-
-            <p>Add Staff: </p>
-            <form action="/addStaff" method="post">
-                <label for="enterStaffUsernameAdd"> Enter Staff Username: </label> <br>
-                <input type="text" name="enterStaffUsernameAdd"> <br>
-                <input type="Submit" value="Add Staff">
-            </form>
-
-            <p>Remove Staff: </p>
-            <form action="/removeStaff" method="post">
-                <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>
-                <input type="text" name="enterStaffUsernameRemove"> <br>
-                <input type="Submit" value="Remove Staff">
-            </form>
+        <% } %></p> 
+        
+            <div class="row">
+                <div class="column">
+                    <p> Add Staff: </p>
+                    <form action="/addStaff" method="post">
+                        <label for="enterStaffUsernameAdd"> Enter Staff Username: </label> <br>
+                        <input type="text" name="enterStaffUsernameAdd"> <br>
+                        <input type="Submit" value="Add Staff">
+                    </form>
+                </div>
+                <div class="column">
+                    <p> Remove Staff: </p>
+                    <form action="/removeStaff" method="post">
+                        <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>
+                        <input type="text" name="enterStaffUsernameRemove"> <br>
+                        <input type="Submit" value="Remove Staff">
+                    </form>
+                </div>
+            </div>
         <%} else { %>
-            <p style="color: red;">You do not have access to this functionality.</p>
+            <p style="color: darkred;">You do not have access to this functionality.</p>
             <p>Please apply to become a hospital owner and we will gladly review your application. Upon acceptance, we will add your hospital to our information and you will then have access to this functionality.</p>
         <% } %>
     </main>

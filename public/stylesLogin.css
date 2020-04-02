@@ -26,3 +26,24 @@
     color: indianred;
 }
 
+h1 {
+    font-family: sans-serif;
+}
+
+h4 {
+    font-family: sans-serif;
+}
+
+p {
+    font-family: sans-serif;
+}
+
+input[type=submit] {
+    background-color: green;
+    color: white;
+}
+
+label {
+    font-family: sans-serif;
+}
+

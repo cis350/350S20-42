@@ -16,8 +16,8 @@ var userSchema = new Schema({
 });
 
 var medRequestSchema = new Schema({
-  creator: {type: userSchema, required: true, unique: false},
-  description: {type: String, unique: false}
+  creator: {type: userSchema, required: true},
+  description: String
 });
 
 module.exports = {userModel: mongoose.model('User', userSchema),
