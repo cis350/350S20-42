@@ -29,6 +29,7 @@ var hosRequestSchema = new Schema({
 
 var hosSchema = new Schema({
     owner: userSchema,
+    name: String,
     location: String,
     website: String,
     staffArray: [userSchema]
