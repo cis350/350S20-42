@@ -122,22 +122,24 @@ app.get('/medicalrequest', function (req, res) {
 });
 
 app.use('/createMedRequest', (req, res) => {
-  if (req.body.input) {
+  if (req.body.input && !currentUser.medicalAccount) {
       var newRequest = new MedicalRequest({
         creator: currentUser,
         description: req.body.input,
-    });
+      });
 
-    newRequest.save( (err) => {
-        if (err) {
-            console.log(err);
-            res.end();
-        } else {
-            console.log('logged the request');
-        }
-    });
+      newRequest.save( (err) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              console.log('logged the request');
+          }
+      });
 
-    res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
+      res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
+  } else if (req.body.input && currentUser.medicalAccount) {
+      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: This account is already certified!"});
   } else {
       res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
   }
