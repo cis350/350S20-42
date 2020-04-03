@@ -5,14 +5,11 @@ mongoose.connect('mongodb://localhost:27017/database');
 
 var Schema = mongoose.Schema;
 
-//must be defined so we can use it in userSchema without an error
-var hosSchema = new Schema();
-
 var userSchema = new Schema({
   username: {type: String, required: true, unique: true},
   password: {type: String, required: true},
   hospitalOwner: Boolean,
-  hospitalArray: {type: [hosRequestSchema]},
+  hospitalArray: {type: [hosSchema]},
   medicalAccount: Boolean
 });
 
@@ -23,15 +20,16 @@ var medRequestSchema = new Schema({
 
 var hosRequestSchema = new Schema({
   creator: {type: userSchema, required: true, unique: false},
-  location: String,
+  name: {type: String, required: true, unique: true},
+  location: {type: String, required: true},
   website: String,
   description: {type: String, unique: false}
 });
 
-hosSchema.add({
-    name: {type: String, unique: true, required: true},
-    owner: userSchema,
-    location: String,
+var hosSchema = new Schema({
+    owner: {type: userSchema, required: true, unique: false},
+    name: {type: String, required: true, unique: true},
+    location: {type: String, required: true},
     website: String,
     staffArray: {type: [userSchema]}
 });

@@ -66,6 +66,17 @@ app.use('/create', (req, res) => {
   });
 });
 
+app.use('/beHospitalOwner', (req, res) => {
+  currentUser.hospitalOwner = true;
+  currentUser.save( (err) => {
+      if (err) {
+          res.json({'status' : err});
+      } else {
+          res.render('differentDashboard', {user: currentUser});
+      }
+  });
+});
+
 app.use('/beMedicalAccount', (req, res) => {
   currentUser.medicalAccount = true;
   currentUser.save( (err) => {
@@ -113,7 +124,22 @@ app.get('/medicalrequest', function (req, res) {
 });
 
 app.use('/createMedRequest', (req, res) => {
-  if (req.body.input && !currentUser.medicalAccount) {
+  var sentRequest = false;
+  MedicalRequest.findOne( {creator: currentUser}, (err, request) => {
+      if (err) {
+          console.log(err);
+          res.end();
+      } else if (!request) {
+          sentRequest = false;
+      } else {
+          sentRequest = true;
+      }
+  });
+
+  // Here for testing
+  console.log(sentRequest);
+
+  if (req.body.input && !currentUser.medicalAccount && !sentRequest) {
       var newRequest = new MedicalRequest({
         creator: currentUser,
         description: req.body.input,
@@ -131,9 +157,19 @@ app.use('/createMedRequest', (req, res) => {
       res.render('upgradeRequest', {user: currentUser, sent: currentUser.username + " sent the following: " + req.body.input});
   } else if (req.body.input && currentUser.medicalAccount) {
       res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " is already certified!"});
+  } else if (req.body.input && sentRequest) {
+      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " already has a pending request!"});
   } else {
       res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
   }
+});
+
+app.get('/hospitalrequest', function (req, res) {
+    res.render('hospitalRequest', {user: currentUser, sent: ""});
+});
+
+app.use('/createHosRequest', (req, res) => {
+    res.render('hospitalRequest', {user: currentUser, sent: "Working on it"});
 });
 
 app.get('/adminhome', function (req, res) {
@@ -167,7 +203,7 @@ app.use('/myHospital', (req, res) => {
 });
 
 app.use('/addStaff', (req, res) => {
-  //status is 0 if not med acct, 1 if staff does not exist, 3 if hospital doesn't exist, 4 if staff is already in hospital    
+  //status is 0 if not med acct, 1 if staff does not exist, 3 if hospital doesn't exist, 4 if staff is already in hospital
   if (req.body.enterStaffUsernameAdd) {
       User.findOne( {username : req.body.enterStaffUsernameAdd}, (err, staff) => {
           if (err) {
@@ -225,7 +261,7 @@ app.use('/removeStaff', (req, res) => {
                   //account is not doctor
                   res.render('staffMemberError', {status: 0});
               } else {
-                  
+
                   for (var i = 0; i < currentUser.hospitalArray.length; i++) {
                       if (currentUser.hosptialArray[i].name == req.body.enterHospitalNameRemove) {
                           if (!currentUser.hospitalArray[i].staffArray) {
