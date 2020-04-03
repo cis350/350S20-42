@@ -1,4 +1,3 @@
-
 <head>
     <script src="../mainLogin.js"></script>
     <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
@@ -11,12 +10,13 @@
         <a class="active" href="/myHospital">My Hospital</a>
         <a href="/myRequests">My Requests</a>
         <a href="/medicalrequest">Medical Upgrade</a>
+        <a href="/hospitalrequest">Hospital Creation</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
         <h1 style='color: darkred;'>Error</h1>
-        
+
         <% if (status == 0) {%>
            <p>Sorry, but the staff member you wanted to add/remove is not a medical account. It must be that an account is approved to be a medical account before they can be added/removed to a hosptial staff.</p>
         <%} else if (status == 1) { %>
@@ -29,5 +29,4 @@
             <p>Sorry, the staff you wanted to add to the hosptial is already working at the hospital.</p>
         <%}%>
     </main>
-
 </body>
