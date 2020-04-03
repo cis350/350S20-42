@@ -148,7 +148,16 @@ app.get('/adminhome', function (req, res) {
 });
 
 app.get('/accountchange', function (req, res) {
-  res.render('upgradeAccounts', {user: currentUser});
+  MedicalRequest.find( (err, allRequests) => {
+    if (err) {
+        console.log(err);
+        res.end();
+    } else if (allRequests.length == 0) {
+        res.render('upgradeAccounts', {user: currentUser, requests: null});
+    } else {
+        res.render('upgradeAccounts', {user: currentUser, requests: allRequests});
+    }
+  });
 });
 
 app.use('/myHospital', (req, res) => {
