@@ -30,14 +30,20 @@
 
 <body class="container">
     <div class="topnav">
-        <a class="active" href="/adminhome">Home</a>
-        <a href="/accountchange">Medical Accounts</a>
+        <a href="/adminhome">Home</a>
+        <a class="active" href="/accountchange">Medical Accounts</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
         <h1>Medical Account Changes</h1>
-        <button class="btn info" name="approve">Click Me!</button>
+        <% if (requests) {%>
+          <% requests.forEach( (request) => { %>
+              <br> <%= request.creator.username %>
+              <br> <%= request.description %>
+              <br>
+          <% }); %>
+          <% } %>
     </main>
 
 </body>

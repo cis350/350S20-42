@@ -34,15 +34,21 @@
         <a href="/home">Home</a>
         <a href="/myHospital">My Hospital</a>
         <a href="/myRequests">My Requests</a>
-        <a class="active" href="/medicalrequest">Medical Upgrade</a>
-        <a href="/hospitalrequest">Hospital Creation</a>
+        <a href="/medicalrequest">Medical Upgrade</a>
+        <a class="active" href="/hospitalrequest">Hospital Creation</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
-        <h1>Submit a Medical Account Request</h1>
-        <p>State your case:</p>
-        <form action="/createMedRequest" id="request" method="post">
+        <h1>Submit a Hospital Creation Request</h1>
+        <form action="/createHosRequest" id="request" method="post">
+          <label>Name of Hospital: </label> <br>
+          <input type="text" name="hospital"> <br>
+          <label>Location of Hospital: </label> <br>
+          <input type="text" name="place"> <br>
+          <label>Website of Hospital: </label> <br>
+          <input type="text" name="web"> <br>
+          <label>Additional Information: </label> <br>
           <textarea name = "input"
                     rows = "3"
                     cols = "80"></textarea> <br>
