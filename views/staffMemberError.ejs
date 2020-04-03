@@ -21,9 +21,13 @@
            <p>Sorry, but the staff member you wanted to add/remove is not a medical account. It must be that an account is approved to be a medical account before they can be added/removed to a hosptial staff.</p>
         <%} else if (status == 1) { %>
             <p>Sorry, but the staff member you wanted to add/remove does not have an account. Make sure they make an account on the application, and are approved to be a medical account, and then try again!</p>
-        <%} else {%>
+        <%} else if (status == 2) {%>
             <p>Sorry, but the staff member you wanted to remove does not exist in this hospital.</p>
-        <% } %>
+        <% } else if (status == 3 {%>
+            <p>Sorry, but the hosptial you requested is not owned by you or doesn't exist.</p>
+        <%} else { %>
+            <p>Sorry, the staff you wanted to add to the hosptial is already working at the hospital.</p>
+        <%}%>
     </main>
 
 </body>
