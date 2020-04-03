@@ -11,6 +11,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 var schemas = require('./User.js');
 var User = schemas.userModel;
 var MedicalRequest = schemas.medRequestModel;
+var HospitalRequest = schemas.hosRequestModel;
+var Hospital = schemas.hosModel;
 
 var currentUser = null;
 
@@ -137,9 +139,9 @@ app.use('/createMedRequest', (req, res) => {
           }
       });
 
-      res.render('upgradeRequest', {user: currentUser, sent: "Sent the following: " + req.body.input});
+      res.render('upgradeRequest', {user: currentUser, sent: currentUser.username + " sent the following: " + req.body.input});
   } else if (req.body.input && currentUser.medicalAccount) {
-      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: This account is already certified!"});
+      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " is already certified!"});
   } else {
       res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
   }
