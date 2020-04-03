@@ -146,20 +146,29 @@ app.use('/createMedRequest', (req, res) => {
 });
 
 app.get('/adminhome', function (req, res) {
-  res.render('adminDashboard', {user: currentUser});
+  if (currentUser.username == 'administrator') {
+      res.render('adminDashboard', {user: currentUser});
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
 });
 
 app.get('/accountchange', function (req, res) {
-  MedicalRequest.find( (err, allRequests) => {
-    if (err) {
-        console.log(err);
-        res.end();
-    } else if (allRequests.length == 0) {
-        res.render('upgradeAccounts', {user: currentUser, requests: null});
-    } else {
-        res.render('upgradeAccounts', {user: currentUser, requests: allRequests});
-    }
-  });
+
+  if (currentUser.username == 'administrator') {
+      MedicalRequest.find( (err, allRequests) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else if (allRequests.length == 0) {
+              res.render('upgradeAccounts', {user: currentUser, requests: null});
+          } else {
+              res.render('upgradeAccounts', {user: currentUser, requests: allRequests});
+          }
+      });
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
 });
 
 app.use('/myHospital', (req, res) => {
