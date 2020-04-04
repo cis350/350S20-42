@@ -17,29 +17,20 @@
     <main>
         <h1>My Hospital</h1>
 
-        <form action="/beMedicalAccount" method="post">
-            <input type="submit" value="Click to be Medical Account">
-        </form>
-
         <% if (user.hospitalOwner) {%>
-            <div class="row">
-                <%hospital.forEach( (hosp) => { %>
-                    <div class="column">
-                        <p>Hospital name: </p>
-                        <p>My staff:
-                        <% if (staff) { %>
-                            You currently have <%= staff.length %> staff member(s).
-                            <% if (staff.length > 0) { %>
-                                <% staff.forEach( (member) => { %>
-                                    <br> <%= member.username %>
-                                <% }); %>
-                            <% } %>
-                        <% } else { %>
-                            You currently have no staff. Enter information in the form below to add staff!
-                        <% } %></p>
-                    </div>
-                <%});%>
-            </div>
+            <p>My Staff:
+                <% if (staff) { %>
+                    You currently have <%= staff.length %> staff member(s).
+                    <% if (staff.length > 0) { %>
+                        <% staff.forEach( (member) => { %>
+                            <br> <%= member.username %>
+                        <% }); %>
+                    <% } %>
+                <% } else { %>
+                    You currently have no staff. Enter information in the form below to add staff!
+                <% } %>
+            </p>
+                
 
             <div class="row">
                 <div class="column">
@@ -47,8 +38,6 @@
                     <form action="/addStaff" method="post">
                         <label for="enterStaffUsernameAdd"> Enter Staff Username: </label> <br>
                         <input type="text" name="enterStaffUsernameAdd"> <br>
-                        <label for="enterHospitalNameAdd"> Enter Hospital name: </label> <br>
-                        <input type="text" name="enterHosptialNameAdd"> <br>
                         <input type="Submit" value="Add Staff">
                     </form>
                 </div>
@@ -57,8 +46,6 @@
                     <form action="/removeStaff" method="post">
                         <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>
                         <input type="text" name="enterStaffUsernameRemove"> <br>
-                        <label for="enterHospitalNameRemove"> Enter Staff Username: </label> <br>
-                        <input type="text" name="enterHospitalNameRemove"> <br>
                         <input type="Submit" value="Remove Staff">
                     </form>
                 </div>

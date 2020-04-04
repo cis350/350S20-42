@@ -46,7 +46,7 @@ User.find(adminUser, (err, users) => {
 
 //********************************testing purposes only***************
 
-app.use('/create', (req, res) => {
+/*app.use('/create', (req, res) => {
 
   var newPerson = new User({
       username: req.body.username,
@@ -87,7 +87,7 @@ app.use('/beMedicalAccount', (req, res) => {
           res.render('differentDashboard', {user: currentUser});
       }
   });
-});
+});*/
 
 //**********************************************************************
 
@@ -450,11 +450,11 @@ app.use('/hospitallist', (req, res) => {
 
 // Page for observing own hospital
 app.use('/myHospital', (req, res) => {
-  res.render('myHospital', {user: currentUser, hospital: currentUser.hospitalArray});
+  res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
 });
 
 app.use('/addStaff', (req, res) => {
-  //status is 0 if not med acct, 1 if staff does not exist, 3 if hospital doesn't exist, 4 if staff is already in hospital
+  //status is 0 if not med acct, 1 if staff does not exist 
   if (req.body.enterStaffUsernameAdd) {
       User.findOne( {username : req.body.enterStaffUsernameAdd}, (err, staff) => {
           if (err) {
@@ -467,39 +467,28 @@ app.use('/addStaff', (req, res) => {
                   //staff member isn't a doctor
                   res.render('staffMemberError', {status: 0});
               } else {
-                  for (var i = 0; i < currentUser.hospitalArray.length; i++) {
-                      if (currentUser.hospitalArray[i].name == req.body.enterHosptialNameAdd) {
-                          if (!currentUser.hospitalArray[i].staffArray) {
-                              currentUser.hospitalArray[i].staffArray = [];
-                          }
-                          for (var j = 0; j < currentUser.hospitalArray[i].staffArray.length; j++) {
-                              if (currentUser.hospitalArray[i].staffArray[j].username == req.body.enterStaffUsernameAdd) {
-                                  //Staff already in hospital
-                                  res.render('staffMemberError', {status: 4});
-                              }
-                          }
-                          //staff not already in hosptial
-                          currentUser.hospitalArray.push(staff);
-                          currentUser.hospitalArray.save( (err) => {
-                             if (err) {
-                              res.json({'status' : err});
-                             } else {
-                                 res.render('myHospital', {user: currentUser, hosptial: currentUser.hosptialArray});
-                             }
-                          });
-                      }
+                  if (!currentUser.staffArray) {
+                      currentUser.staffArray = [];
                   }
-                  res.render('staffMemberError', {status: 3});
+                  
+                  currentUser.staffArray.push(staff);
+                  currentUser.save( (err) => {	
+                     if (err) {	
+                         res.json({'status' : err});	
+                     } else {	
+                         res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});	
+                     }	
+                  });
               }
           }
       });
   } else {
-      res.render('myHospital', {user: currentUser, hospital: currentUser.hospitalArray});
+      res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
   }
 });
 
 app.use('/removeStaff', (req, res) => {
-  //status 0: not doctor, status 1: not existing in hospital chosen, status 2: not in hospital, status 3: hosptial does not exist / not owned by user
+  //status 0: not doctor, status 1: not existing in hospital chosen, status 2: not in hospital
   if(req.body.enterStaffUsernameRemove) {
       User.findOne( {username : req.body.enterStaffUsernameRemove}, (err, staff) => {
           if (err) {
@@ -512,33 +501,32 @@ app.use('/removeStaff', (req, res) => {
                   //account is not doctor
                   res.render('staffMemberError', {status: 0});
               } else {
-
-                  for (var i = 0; i < currentUser.hospitalArray.length; i++) {
-                      if (currentUser.hosptialArray[i].name == req.body.enterHospitalNameRemove) {
-                          if (!currentUser.hospitalArray[i].staffArray) {
-                              currentUser.hospitalArray[i].staffArray = [];
-                          }
-                          for (var j = 0; j < currentUser.hospitalArray[i].staffArray.length; j++ ) {
-                              if (currentUser.hosptialArray[i].staffArray[j].username == req.body.enterStaffUsernameRemove) {
-                                  currentUser.hosptialArray[i].staffArray.splice(j, 1);
-                                  currentUser.hospitalArray[i].save( (err) => {
-                                      if (err) {
-                                          res.json({'status' : err});
-                                     } else {
-                                         res.render('myHospital', {user: currentUser, hosptial: currentUser.hospitalArray});
-                                     }
-                                  });
-                              }
-                          }
-                          res.render('staffMemberError', {status: 2});
+                var index = -1;	
+                  for (var i = 0; i < currentUser.staffArray.length; i++) {	                  
+                      if (staff.username == currentUser.staffArray[i].username) {	                      
+                          index = i;
                       }
                   }
-                  res.render('staffMemberError', {status: 3});
+                  
+                  if (index < 0) {	
+                      //account is not in hospital	
+                      res.render('staffMemberError', {status: 2});	
+                  } else {	
+                      //remove and save	
+                      currentUser.staffArray.splice(index, 1);	
+                      currentUser.save( (err) => {	
+                         if (err) {	
+                              res.json({'status' : err});	
+                         } else {	
+                             res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});	
+                         }	
+                     });	
+                  }
               }
           }
       });
   } else {
-      res.render('myHospital', {user: currentUser, hospital: currentUser.hospitalArray});
+      res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
   }
 });
 
