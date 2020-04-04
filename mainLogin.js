@@ -372,6 +372,8 @@ app.use('/acceptHospitalRequest', (req, res) => {
               res.end();
           } else {
 
+            console.log("HERE" + request.creator);
+
             var newHospital = new Hospital({
               owner: request.creator,
               name: request.name,
@@ -420,6 +422,24 @@ app.use('/rejectHospitalRequest', (req, res) => {
       });
 
       res.render('adminDashboard', {user: currentUser});
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+
+app.use('/hospitallist', (req, res) => {
+  if (currentUser.username == 'administrator') {
+      var name = req.query.name;
+
+      Hospital.find( (err, hospitals) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              res.render('hospitalList', {hospitals: hospitals});
+          }
+      });
   } else {
       res.render('differentDashboard', {user: currentUser});
   }
