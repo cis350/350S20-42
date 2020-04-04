@@ -45,9 +45,9 @@
         <br>
         <br><i>Description:</i> <%= request.description %>
         <br>
-        <br><form action="/acceptHospitalRequest?name=<%= request.name %>" method="post">
+        <br><!-- <form action="/acceptHospitalRequest?name=<%= request.name %>" method="post">
             <input type="submit" class = "btn info" value="Accept Request">
-            </form>
+            </form> -->
             <form action="/rejectHospitalRequest?name=<%= request.name %>" method="post">
             <input type="submit" class = "btn reject" value="Reject Request">
             </form>
