@@ -31,17 +31,18 @@
 <body class="container">
     <div class="topnav">
         <a href="/adminhome">Home</a>
-        <a class="active" href="/accountchange">Medical Accounts</a>
-        <a href="/hospitalcreation">Hospital Creation</a>
+        <a href="/accountchange">Medical Accounts</a>
+        <a class="active" href="/hospitalcreation">Hospital Creation</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
-        <h1>Medical Account Requests: </h1>
+        <h1>Hospital Creation Requests: </h1>
         <% if (requests) {%>
           <% requests.forEach( (request) => { %>
               <br><i>Account:</i> <%= request.creator.username %>
-              <br><form action="/viewAccountRequest?name=<%= request.creator.username %>" method="post">
+              <br><i>Hospital:</i> <%= request.name %>
+              <br><form action="/viewHospitalRequest?name=<%= request.name %>" method="post">
                   <input type="submit" class = "btn info" value="View More">
                   </form>
           <% }); %>

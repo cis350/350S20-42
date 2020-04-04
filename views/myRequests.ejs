@@ -18,15 +18,30 @@
         <h1>My Pending Requests</h1>
 
         <b>Name: </b> <%= user.username %> <br>
+        <b>Medical Requests: </b> <br>
         <% if (requests) {%>
           <% requests.forEach( (request) => { %>
               <% if (user.username == request.creator.username) {%>
-              <br> <%= request.creator.username %>
-              <br> <%= request.description %>
+              <br><i>Account:</i> <%= request.creator.username %>
+              <br> <i>Description:</i> <%= request.description %>
               <br>
               <% } %>
           <% }); %>
-          <% } %>
+          <% } %> <br>
+          <b>Hospital Requests: </b> <br>
+          <% if (more) {%>
+            <% more.forEach( (request) => { %>
+                <% if (user.username == request.creator.username) {%>
+                <br><i>Account:</i> <%= request.creator.username %>
+                <br><i>Hospital Name:</i> <%= request.name %>
+                <br><i>Hospital Location:</i> <%= request.location %>
+                <br><i>Hospital Website:</i> <%= request.website %>
+                <br>
+                <br><i>Description:</i> <%= request.description %>
+                <br>
+                <% } %>
+            <% }); %>
+          <% } %> <br>
     </main>
 
 </body>

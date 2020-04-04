@@ -37,15 +37,17 @@
     </div>
 
     <main>
-        <h1>Medical Account Requests: </h1>
-        <% if (requests) {%>
-          <% requests.forEach( (request) => { %>
-              <br><i>Account:</i> <%= request.creator.username %>
-              <br><form action="/viewAccountRequest?name=<%= request.creator.username %>" method="post">
-                  <input type="submit" class = "btn info" value="View More">
-                  </form>
-          <% }); %>
-          <% } %>
+        <h1>Detailed Upgrade Request: </h1>
+        <br><i>Account:</i> <%= request.creator.username %>
+        <br>
+        <br><i>Description:</i> <%= request.description %>
+        <br>
+        <br><form action="/acceptAccountRequest?name=<%= request.creator.username %>" method="post">
+            <input type="submit" class = "btn info" value="Accept Request">
+            </form>
+            <form action="/rejectAccountRequest?name=<%= request.creator.username %>" method="post">
+            <input type="submit" class = "btn reject" value="Reject Request">
+            </form>
     </main>
 
 </body>
