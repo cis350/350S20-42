@@ -1,0 +1,51 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Admin Dashboard</title>
+</head>
+
+<style>
+.btn {
+  background-color: inherit;
+  cursor: pointer;
+  display: inline-block;
+}
+/* Green */
+.info {
+  color: green;
+}
+.info:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+/* Red */
+.reject {
+  color: red;
+}
+.reject:hover {
+  background: #f44336;
+  color: white;
+}
+</style>
+
+<body class="container">
+    <div class="topnav">
+        <a href="/adminhome">Home</a>
+        <a class="active" href="/accountchange">Medical Accounts</a>
+        <a href="/hospitalcreation">Hospital Creation</a>
+        <a href="/">Logout</a>
+    </div>
+
+    <main>
+        <h1>Medical Account Requests: </h1>
+        <% if (requests) {%>
+          <% requests.forEach( (request) => { %>
+              <br><i>Account:</i> <%= request.creator.username %>
+              <br><form action="/viewAccountRequest?name=<%= request.creator.username %>" method="post">
+                  <input type="submit" class = "btn info" value="View More">
+                  </form>
+          <% }); %>
+          <% } %>
+    </main>
+
+</body>

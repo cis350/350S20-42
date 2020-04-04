@@ -1,0 +1,61 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Dashboard</title>
+</head>
+
+<style>
+.btn {
+  background-color: inherit;
+  cursor: pointer;
+  display: inline-block;
+}
+/* Green */
+.info {
+  background-color: black;
+  color: white;
+}
+.info:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+/* Red */
+.reject {
+  color: red;
+}
+.reject:hover {
+  background: #f44336;
+  color: white;
+}
+</style>
+
+<body class="container">
+    <div class="topnav">
+        <a href="/home">Home</a>
+        <a href="/myHospital">My Hospital</a>
+        <a href="/myRequests">My Requests</a>
+        <a href="/medicalrequest">Medical Upgrade</a>
+        <a class="active" href="/hospitalrequest">Hospital Creation</a>
+        <a href="/">Logout</a>
+    </div>
+
+    <main>
+        <h1>Submit a Hospital Creation Request</h1>
+        <form action="/createHosRequest" id="request" method="post">
+          <label>Name of Hospital (REQUIRED): </label> <br>
+          <input type="text" name="hospital"> <br>
+          <label>Location of Hospital (REQUIRED): </label> <br>
+          <input type="text" name="place"> <br>
+          <label>Website of Hospital: </label> <br>
+          <input type="text" name="web"> <br>
+          <label>Additional Information: </label> <br>
+          <textarea name = "input"
+                    rows = "3"
+                    cols = "80"></textarea> <br>
+          <input type="submit" class="btn info" value="Submit">
+        </form>
+        <%= sent %> <br>
+
+    </main>
+
+</body>
