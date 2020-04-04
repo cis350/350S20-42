@@ -9,7 +9,7 @@ var userSchema = new Schema({
   username: {type: String, required: true, unique: true},
   password: {type: String, required: true},
   hospitalOwner: Boolean,
-  hospitalArray: {type: [hosSchema]},
+  hospitalArray: [{type: Schema.Types.ObjectId, ref: 'Hospital'}],
   medicalAccount: Boolean
 });
 
@@ -19,8 +19,8 @@ var medRequestSchema = new Schema({
 });
 
 var hosRequestSchema = new Schema({
-  creator: {type: userSchema, required: true, unique: false},
   name: {type: String, required: true, unique: true},
+  creator: {type: userSchema, required: true, unique: false},
   location: {type: String, required: true},
   website: String,
   description: {type: String, unique: false}

@@ -16,6 +16,7 @@ var Hospital = schemas.hosModel;
 
 var currentUser = null;
 
+// Hardcodes an administrator
 var adminUser = new User({
 username: "administrator",
 password: "test",
@@ -119,25 +120,28 @@ app.get('/home', function (req, res) {
   res.render('differentDashboard', {user: currentUser});
 });
 
+// Start of creating medical request functionality
 app.get('/medicalrequest', function (req, res) {
   res.render('upgradeRequest', {user: currentUser, sent: ""});
 });
 
 app.use('/createMedRequest', (req, res) => {
   var sentRequest = false;
-  MedicalRequest.findOne( {creator: currentUser}, (err, request) => {
+
+  MedicalRequest.find( (err, allRequests) => {
       if (err) {
           console.log(err);
           res.end();
-      } else if (!request) {
-          sentRequest = false;
       } else {
-          sentRequest = true;
+          allRequests.forEach( (request) => {
+              if (request.creator.username == currentUser.username) {
+                  sentRequest = true;
+                  console.log("WORKS");
+              }
+          });
+          console.log(sentRequest);
       }
   });
-
-  // Here for testing
-  console.log(sentRequest);
 
   if (req.body.input && !currentUser.medicalAccount && !sentRequest) {
       var newRequest = new MedicalRequest({
@@ -163,15 +167,50 @@ app.use('/createMedRequest', (req, res) => {
       res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
   }
 });
+// End of creating medical request functionality
 
+
+// Start of creating hospital request functionality
 app.get('/hospitalrequest', function (req, res) {
     res.render('hospitalRequest', {user: currentUser, sent: ""});
 });
 
 app.use('/createHosRequest', (req, res) => {
-    res.render('hospitalRequest', {user: currentUser, sent: "Working on it"});
-});
+  if (req.body.hospital && req.body.place) {
+      var newRequest = new HospitalRequest({
+        creator: currentUser,
+        name: req.body.hospital,
+        location: req.body.place
+      });
 
+      if (req.body.web) {
+        newRequest.website = req.body.web;
+        console.log("HAS WEBSITE");
+      }
+
+      if (req.body.input) {
+        newRequest.description = req.body.input;
+        console.log("HAS DESCRIPTION");
+      }
+
+      newRequest.save( (err) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              console.log('logged the request');
+          }
+      });
+
+      res.render('hospitalRequest', {user: currentUser, sent: currentUser.username + " sent the following for: " + req.body.hospital});
+  } else {
+      res.render('hospitalRequest', {user: currentUser, sent: "Not Sent"});
+  }
+});
+// End of creating hopsital request functionality
+
+
+// Start of admin actions
 app.get('/adminhome', function (req, res) {
   if (currentUser.username == 'administrator') {
       res.render('adminDashboard', {user: currentUser});
@@ -180,8 +219,8 @@ app.get('/adminhome', function (req, res) {
   }
 });
 
+// Page for viewing medical requests
 app.get('/accountchange', function (req, res) {
-
   if (currentUser.username == 'administrator') {
       MedicalRequest.find( (err, allRequests) => {
           if (err) {
@@ -198,6 +237,198 @@ app.get('/accountchange', function (req, res) {
   }
 });
 
+// Page for viewing hospital requests
+app.get('/hospitalcreation', function (req, res) {
+  if (currentUser.username == 'administrator') {
+      HospitalRequest.find( (err, allRequests) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else if (allRequests.length == 0) {
+              res.render('hospitalCreation', {user: currentUser, requests: null});
+          } else {
+              res.render('hospitalCreation', {user: currentUser, requests: allRequests});
+          }
+      });
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+});
+
+// Page for viewing specific medical request
+app.use('/viewAccountRequest', (req, res) => {
+  if (currentUser.username == 'administrator') {
+    var name = req.query.name;
+
+    MedicalRequest.find( (err, allRequests) => {
+        if (err) {
+            console.log(err);
+            res.end();
+        } else {
+            allRequests.forEach( (request) => {
+                if (request.creator.username == name) {
+                    res.render('viewAccountRequest', {request: request});
+                }
+            });
+        }
+    });
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+
+// Page for accepting specific medical request
+app.use('/acceptAccountRequest', (req, res) => {
+  if (currentUser.username == 'administrator') {
+      var name = req.query.name;
+
+      MedicalRequest.find( (err, allRequests) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              allRequests.forEach( (request) => {
+                  if (request.creator.username == name) {
+                      request.remove();
+                  }
+              });
+          }
+      });
+
+      User.findOne( {username: name}, (err, user) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else if (user) {
+              user.medicalAccount = true;
+              user.save( (err) => {
+                  if (err) {
+                      res.json({'status' : err});
+                  }
+              });
+          }
+      });
+
+      res.render('adminDashboard', {user: currentUser});
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+
+// Page for rejecting specific medical request
+app.use('/rejectAccountRequest', (req, res) => {
+  if (currentUser.username == 'administrator') {
+      var name = req.query.name;
+
+      MedicalRequest.find( (err, allRequests) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              allRequests.forEach( (request) => {
+                  if (request.creator.username == name) {
+                      request.remove();
+                  }
+              });
+          }
+      });
+
+      res.render('adminDashboard', {user: currentUser});
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+
+// Page for viewing specific hospital request
+app.use('/viewHospitalRequest', (req, res) => {
+  if (currentUser.username == 'administrator') {
+    var name = req.query.name;
+
+    HospitalRequest.findOne( {name: name}, (err, request) => {
+        if (err) {
+            console.log(err);
+            res.end();
+        } else {
+            res.render('viewHospitalRequest', {request: request});
+        }
+    });
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+
+// Page for accepting specific hospital request
+app.use('/acceptHospitalRequest', (req, res) => {
+  if (currentUser.username == 'administrator') {
+      var name = req.query.name;
+
+      HospitalRequest.findOne( {name: name}, (err, request) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+
+            var newHospital = new Hospital({
+              owner: request.creator,
+              name: request.name,
+              location: request.location,
+              website: request.website,
+            });
+
+            newHospital.save( (err) => {
+                if (err) {
+                    console.log("HOSPITAL SAVE THROWN");
+                    res.json({'status' : err});
+                }
+            });
+
+            request.creator.hospitalOwner = true;
+            request.creator.save( (err) => {
+                if (err) {
+                    console.log("USER SAVE THROWN");
+                    res.json({'status' : err});
+                }
+            });
+
+            request.remove();
+          }
+      });
+
+      res.render('adminDashboard', {user: currentUser});
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+
+// Page for rejecting specific hospital request
+app.use('/rejectHospitalRequest', (req, res) => {
+  if (currentUser.username == 'administrator') {
+      var name = req.query.name;
+
+      HospitalRequest.findOne( {name: name}, (err, request) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              request.remove();
+          }
+      });
+
+      res.render('adminDashboard', {user: currentUser});
+  } else {
+      res.render('differentDashboard', {user: currentUser});
+  }
+
+});
+// End of admin action
+
+
+// Page for observing own hospital
 app.use('/myHospital', (req, res) => {
   res.render('myHospital', {user: currentUser, hospital: currentUser.hospitalArray});
 });
@@ -291,15 +522,34 @@ app.use('/removeStaff', (req, res) => {
   }
 });
 
+// Page for viewing user's own requests
 app.get('/myRequests', function (req, res) {
-  MedicalRequest.find( (err, allRequests) => {
+  MedicalRequest.find( (err, medRequests) => {
     if (err) {
         console.log(err);
         res.end();
-    } else if (allRequests.length == 0) {
-        res.render('myRequests', {user: currentUser, requests: null});
+    } else if (medRequests.length == 0) {
+        HospitalRequest.find( (err, hosRequests) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else if (hosRequests.length == 0) {
+              res.render('myRequests', {user: currentUser, requests: null, more: null});
+          } else {
+              res.render('myRequests', {user: currentUser, requests: null, more: hosRequests});
+          }
+        });
     } else {
-        res.render('myRequests', {user: currentUser, requests: allRequests});
+        HospitalRequest.find( (err, hosRequests) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else if (hosRequests.length == 0) {
+              res.render('myRequests', {user: currentUser, requests: medRequests, more: null});
+          } else {
+              res.render('myRequests', {user: currentUser, requests: medRequests, more: hosRequests});
+          }
+        });
     }
   });
 });
