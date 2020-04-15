@@ -100,7 +100,9 @@ client.connect(err => {
 });
 
 
-var Person = require('./Person.js');
+var schemas = require('./Person.js');
+var Person = schemas.personSchema;
+var PersonVaccine = schemas.personVaccineSchema;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -177,14 +179,20 @@ app.use('/addVaccine', (req, res) => {
     var vId = req.query.vId;
     var vDate = Date.parse(req.query.date);
     var hospitalId = req.query.hId;
+    var newVaccine = new PersonVaccine ({
+        id: vId,
+    date: vDate,
+    hospitalId: hospitalId,
+    verified: false
+    });
     Person.findOne( { username: username, password: password }, 
         (err, person) => {
         if (err) {    
             res.json( { 'status' : err } );
         }else if (!person) {   res.json( { 'status' : 'no person' } );
     }else { 
-       person.img.data = fs.readFileSync(imgPath);
-       person.img.contentType = 'image/png';
+       person.vaccines.push(newVaccine);
+
        person.save( (err) => {
          if (err) {    res.json( { 'status' : err } );
         }else {

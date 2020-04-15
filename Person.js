@@ -17,5 +17,7 @@ var personSchema = new Schema({
     fullName: String,
     img: {data: Buffer, contentType:String},
     vaccines: [personVaccineSchema]
+
 });
-module.exports = mongoose.model('Person', personSchema);
+module.exports = {personSchema: mongoose.model('Person', personSchema),
+personVaccineSchema: mongoose.model('PersonVaccine', personVaccineSchema)}
