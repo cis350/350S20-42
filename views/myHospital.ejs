@@ -26,44 +26,58 @@
 
     <main>
         <h1>My Hospital</h1>
+        
+ 
+            <% hospitals.forEach ( (hospital) => { %>
 
-        <% if (user.hospitalOwner) {%>
-            <p>My Staff:
-                <% if (staff) { %>
-                    You currently have <%= staff.length %> staff member(s).
-                    <% if (staff.length > 0) { %>
-                        <% staff.forEach( (member) => { %>
-                            <br> <%= member.username %>
+                    <p><i>Hospital Name:</i> <%= hospital.name %></p>
+                    <p><i>My Staff:</i>
+                        <% if (hospital.staffArray) { %>
+                            You currently have <%= hospital.staffArray.length %> staff member(s).
+                            <% if (hospital.staffArray.length > 0) { %>
+                                <% hospital.staffArray.forEach( (member) => { %>
+                                    <br> <%= member %>
+                                <% }); %>
+                            <% } %>
+                        <% } else { %>
+                            You currently have no staff. Enter information in the form below to add staff!
+                        <% } %>
+                    </p>
+
+            <% }); %> 
+
+
+
+        <div class="row">
+            <div class="column">
+                <p> Add Staff: </p>
+                <form action="/addStaff" method="post">
+                    <label for="chooseHospital">Choose Hospital: </label> <br>
+                    <select name="chooseHospital">
+                        <% user.hospitalArray.forEach( (hospital) => { %>
+                            <option value="<%=hospital%>"><%=hospital%></option> 
                         <% }); %>
-                    <% } %>
-                <% } else { %>
-                    You currently have no staff. Enter information in the form below to add staff!
-                <% } %>
-            </p>
-                
-
-            <div class="row">
-                <div class="column">
-                    <p> Add Staff: </p>
-                    <form action="/addStaff" method="post">
-                        <label for="enterStaffUsernameAdd"> Enter Staff Username: </label> <br>
-                        <input type="text" name="enterStaffUsernameAdd"> <br>
-                        <input type="Submit" value="Add Staff">
-                    </form>
-                </div>
-                <div class="column">
-                    <p> Remove Staff: </p>
-                    <form action="/removeStaff" method="post">
-                        <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>
-                        <input type="text" name="enterStaffUsernameRemove"> <br>
-                        <input type="Submit" value="Remove Staff">
-                    </form>
-                </div>
+                    </select> <br>
+                    <label for="enterStaffUsernameAdd">Enter Staff Username: </label> <br>
+                    <input type="text" name="enterStaffUsernameAdd"> <br>
+                    <input type="Submit" value="Add Staff">
+                </form>
             </div>
-        <%} else { %>
-            <p style="color: darkred;">You do not have access to this functionality.</p>
-            <p>Please apply to become a hospital owner and we will gladly review your application. Upon acceptance, we will add your hospital to our information and you will then have access to this functionality.</p>
-        <% } %>
+            <div class="column">
+                <p> Remove Staff: </p>
+                <form action="/removeStaff" method="post">
+                    <label for="chooseHospital">Choose Hospital: </label> <br>
+                    <select name="chooseHospital">
+                        <% user.hospitalArray.forEach( (hospital) => { %>
+                            <option value="<%=hospital%>"><%=hospital%></option> 
+                        <% }); %>
+                    </select> <br>
+                    <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>
+                    <input type="text" name="enterStaffUsernameRemove"> <br>
+                    <input type="Submit" value="Remove Staff">
+                </form>
+            </div>
+        </div>
     </main>
 
 </body>

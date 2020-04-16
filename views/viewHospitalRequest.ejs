@@ -47,10 +47,10 @@
         <br><i>Description:</i> <%= request.description %>
         <br>
         <br>
-            <form action="/acceptHospitalRequest?hospital=<%= request.name %>&name=<% request.creator.username%>" method="post">
+            <form action="/acceptHospitalRequest?hospital=<%= request.name %>&name=<%= request.creator.username%>" method="post">
                 <input type="submit" class = "btn info" value="Accept Request">
             </form>
-            <form action="/rejectHospitalRequest?hosptial=<%= request.name %>&name=<%request.creator.username%>" method="post">
+            <form action="/rejectHospitalRequest?hosptial=<%= request.name %>&name=<%=request.creator.username%>" method="post">
             <input type="submit" class = "btn reject" value="Reject Request">
             </form>
     </main>

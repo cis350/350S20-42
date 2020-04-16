@@ -26,7 +26,7 @@
 
     <main>
         <h1 style='color: darkred;'>Error</h1>
-
+        
         <% if (status == 0) {%>
            <p>Sorry, but the staff member you wanted to add/remove is not a medical account. It must be that an account is approved to be a medical account before they can be added/removed to a hosptial staff.</p>
         <%} else if (status == 1) { %>
@@ -35,6 +35,8 @@
             <p>Sorry, but the staff member you wanted to remove does not exist in your hospital.</p>
         <% } else if (status == 2) {%>
             <p>Sorry, but the staff member you wanted to add already exists in your hospital!</p>
+        <% } else if (status == -1) {%>
+            <p>Please make sure that you fill out ALL parts of the form before submitting. Enter a hosptial and a username to add or remove.</p>
         <% } %>
     </main>
 </body>

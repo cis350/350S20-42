@@ -9,8 +9,7 @@ var userSchema = new Schema({
   username: {type: String, required: true},
   password: {type: String, required: true},
   hospitalOwner: Boolean,
-  staffArray: this,
-  hospitalArray: [String];
+  hospitalArray: [String],
   medicalAccount: Boolean,
   sentMedicalRequest: Boolean
 });
@@ -21,8 +20,8 @@ var medRequestSchema = new Schema({
 });
 
 var hosRequestSchema = new Schema({
-  name: {type: String, required: true, unique: true},
-  creator: {type: String, required: true},
+  name: {type: String, required: true, unique: false},
+  creator: {type: userSchema, required: true},
   location: {type: String, required: true},
   website: String,
   description: {type: String, unique: false}
@@ -30,10 +29,10 @@ var hosRequestSchema = new Schema({
 
 var hosSchema = new Schema({
     owner: {type: userSchema, required: true, unique: false},
-    name: {type: String, required: true, unique: true},
+    name: {type: String, required: true, unique: false},
     location: {type: String, required: true},
     website: String,
-    staffArray: {type: [userSchema]}
+    staffArray: [String]
 });
 
 var generalInfo = new Schema({
