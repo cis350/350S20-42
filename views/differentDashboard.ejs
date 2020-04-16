@@ -11,7 +11,7 @@
         <a href="/myRequests">My Requests</a>
         <a href="/medicalRequest">Medical Upgrade</a>
         <a href="/hospitalRequest">Hospital Creation</a>
-        <a href="/">Logout</a>
+        <a href="/logout">Logout</a>
     </div>
 
     <main>
@@ -22,6 +22,11 @@
         <b>Name: </b> <span style="font-family: sans-serif;"><%= user.username %></span><br>
         <b>Is hospital owner? </b><% if (user.hospitalOwner) {%>
         <span style="font-family: sans-serif;">Yes</span>
+        <br>
+          <% user.hospitalArray.forEach( (name) => { %>
+            <br><i>Owned Hospital:</i> <%= name %>
+            <br>
+          <% }); %>
         <%} else {%>
         <span style="font-family: sans-serif;">No</span>
         <%} %> <br>
