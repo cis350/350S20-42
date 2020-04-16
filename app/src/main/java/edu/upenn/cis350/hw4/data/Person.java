@@ -22,4 +22,13 @@ public class Person implements Serializable {
     public String getFullName() {
         return fullName;
     }
+
+    public String getUserame() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
 }

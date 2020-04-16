@@ -12,15 +12,14 @@ import java.util.Scanner;
 
 import edu.upenn.cis350.hw4.data.Person;
 
-public class AccessWebAddVaccine extends AsyncTask<String, String, String> {
+public class AccessWebAddVaccine extends AsyncTask<URL, String, String> {
 
-    protected String doInBackground(String... strArr) {
+    protected String doInBackground(URL... urlArr) {
         try {
-            // get the first URL from the array
+            // get the first URL fr
             URL url = urlArr[0];
-            System.out.println(url);
-            Person[] people = new Person[1];
             // create connection and send HTTP request
+            System.out.print(url);
             System.out.println('b');
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             System.out.println('a');
@@ -33,9 +32,10 @@ public class AccessWebAddVaccine extends AsyncTask<String, String, String> {
             // now the response comes back
             int responsecode = conn.getResponseCode();
             // make sure the response has "200 OK" as the status
+
             if (responsecode != 200) {
                 System.out.println("Unexpected status code: " + responsecode);
-            } else {
+            }/* else {
                 // made it here, we got a good response, let's read it
                 Scanner in = new Scanner(url.openStream());
 
@@ -73,11 +73,13 @@ public class AccessWebAddVaccine extends AsyncTask<String, String, String> {
 
             }
             return people;
+            */
+            return "";
         } catch (IOException e) {
             throw new IllegalStateException();
         } catch (Exception e) {
             System.out.print(e.toString());
-            return new Person[0];
+            return "";
         }
 
     }

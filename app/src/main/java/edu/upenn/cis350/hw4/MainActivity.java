@@ -50,5 +50,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(i);
     }
 
+    public void createClick(View v) {
+        System.out.println("nn");
+        Intent i = new Intent(this, CreateAccountActivity.class);
+        i.putExtra("option", currentOption);
+        startActivity(i);
+    }
+
 
 }
