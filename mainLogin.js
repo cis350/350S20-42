@@ -118,15 +118,26 @@ app.use('/checkLogin', (req, res) => {
 });
 
 app.get('/home', function (req, res) {
-  res.render('differentDashboard', {user: currentUser});
+    if (!currentUser) {
+        res.redirect('/public/login.html');
+    }
+    
+    res.render('differentDashboard', {user: currentUser});
 });
 
 // Start of creating medical request functionality
 app.get('/medicalrequest', function (req, res) {
-  res.render('upgradeRequest', {user: currentUser, sent: ""});
+    if (!currentUser) {
+        res.redirect('/public/login.html');
+    }
+    
+    res.render('upgradeRequest', {user: currentUser, sent: ""});
 });
 
 app.use('/createMedRequest', (req, res) => {
+  if (!currentUser) {
+      res.redirect('/public/login.html');
+  }    
   if (req.body.input && !currentUser.medicalAccount && !currentUser.sendMedicalRequest) {
       var newRequest = new MedicalRequest({
         creator: currentUser,
@@ -169,6 +180,9 @@ app.get('/hospitalrequest', function (req, res) {
 });
 
 app.use('/createHosRequest', (req, res) => {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
   if (req.body.hospital && req.body.place) {
       var newRequest = new HospitalRequest({
         creator: currentUser,
@@ -204,6 +218,9 @@ app.use('/createHosRequest', (req, res) => {
 
 // Start of admin actions
 app.get('/adminhome', function (req, res) {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
   if (currentUser.username == 'administrator') {
       res.render('adminDashboard', {user: currentUser});
   } else {
@@ -213,6 +230,9 @@ app.get('/adminhome', function (req, res) {
 
 // Page for viewing medical requests
 app.get('/accountchange', function (req, res) {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
   if (currentUser.username == 'administrator') {
       MedicalRequest.find( (err, allRequests) => {
           if (err) {
@@ -231,6 +251,9 @@ app.get('/accountchange', function (req, res) {
 
 // Page for viewing hospital requests
 app.get('/hospitalcreation', function (req, res) {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
   if (currentUser.username == 'administrator') {
       HospitalRequest.find( (err, allRequests) => {
           if (err) {
@@ -249,7 +272,10 @@ app.get('/hospitalcreation', function (req, res) {
 
 // Page for viewing specific medical request
 app.use('/viewAccountRequest', (req, res) => {
-  if (currentUser.username == 'administrator') {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+  if (currentUser.username == 'administrator' && req.query.name) {
     var name = req.query.name;
 
     MedicalRequest.find( (err, allRequests) => {
@@ -272,7 +298,10 @@ app.use('/viewAccountRequest', (req, res) => {
 
 // Page for accepting specific medical request
 app.use('/acceptAccountRequest', (req, res) => {
-  if (currentUser.username == 'administrator') {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+  if (currentUser.username == 'administrator' && req.query.name) {
       var name = req.query.name;
 
       MedicalRequest.find( (err, allRequests) => {
@@ -312,7 +341,10 @@ app.use('/acceptAccountRequest', (req, res) => {
 
 // Page for rejecting specific medical request
 app.use('/rejectAccountRequest', (req, res) => {
-  if (currentUser.username == 'administrator') {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+  if (currentUser.username == 'administrator' && req.query.name) {
       var name = req.query.name;
 
       MedicalRequest.find( (err, allRequests) => {
@@ -351,7 +383,11 @@ app.use('/rejectAccountRequest', (req, res) => {
 
 // Page for viewing specific hospital request
 app.use('/viewHospitalRequest', (req, res) => {
-  if (currentUser.username == 'administrator') {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+    
+  if (currentUser.username == 'administrator' && req.query.name) {
     var name = req.query.name;
 
     HospitalRequest.findOne( {name: name}, (err, request) => {
@@ -370,7 +406,10 @@ app.use('/viewHospitalRequest', (req, res) => {
 
 // Page for accepting specific hospital request
 app.use('/acceptHospitalRequest', (req, res) => {
-  if (currentUser.username == 'administrator') {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+  if (currentUser.username == 'administrator' && req.query.name && req.query.hospital) {
       var name = req.query.hospital;
       var username = req.query.name;
 
@@ -412,6 +451,7 @@ app.use('/acceptHospitalRequest', (req, res) => {
                       res.end();
                   } else if (user) {
                       user.hospitalOwner = true;
+                      user.hospitalArray.push(name);
                       user.save( (err) => {
                          if (err) {
                              res.json({'status': err});
@@ -442,7 +482,11 @@ app.use('/acceptHospitalRequest', (req, res) => {
 
 // Page for rejecting specific hospital request
 app.use('/rejectHospitalRequest', (req, res) => {
-  if (currentUser.username == 'administrator') {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+    
+  if (currentUser.username == 'administrator' && req.query.hospital) {
       var name = req.query.hospital;
 
       HospitalRequest.findOne( {name: name}, (err, request) => {
@@ -462,6 +506,10 @@ app.use('/rejectHospitalRequest', (req, res) => {
 });
 
 app.use('/hospitallist', (req, res) => {
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }  
+    
   if (currentUser.username == 'administrator') {
       var name = req.query.name;
 
@@ -758,8 +806,17 @@ app.use('/public', express.static('public'));
 
 app.use('/styles', express.static('styles'));
 
-app.use('/', (req, res) => {
+app.use('/logout', (req, res) => {
+    currentUser = null;
     res.redirect('/public/login.html');
+});
+
+app.use('/', (req, res) => {
+   if (currentUser) {
+       res.render('differentDashboard', {user: currentUser});
+   } else {
+       res.redirect('/public/login.html');
+   }
 });
 
 app.listen(3000, () => {
