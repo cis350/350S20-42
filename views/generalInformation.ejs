@@ -21,6 +21,9 @@
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
         <a class="active" href="/generalInformation">General Vaccine Information</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addScheduleSlots">Add Schedule Openings</a>
+        <% } %>
         <a href="/logout">Logout</a>
     </div>
 

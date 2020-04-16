@@ -10,6 +10,7 @@ var userSchema = new Schema({
   password: {type: String, required: true},
   hospitalOwner: Boolean,
   hospitalArray: [String],
+  employedAt: [String],
   medicalAccount: Boolean,
   sentMedicalRequest: Boolean
 });
@@ -43,11 +44,20 @@ var generalInfo = new Schema({
    approved: Boolean
 });
 
+var scheduleSlot = new Schema({
+    doctor: {type: userSchema, required: true},
+    patient: {type: userSchema},
+    date: {type: Date, required: true},
+    vaccine: {type: String, required: true},
+    specialNotes: String
+});
+
 module.exports = {userModel: mongoose.model('User', userSchema),
 medRequestModel: mongoose.model('MedicalRequest', medRequestSchema),
 hosRequestModel: mongoose.model('HospitalRequest', hosRequestSchema),
 hosModel: mongoose.model('Hospital', hosSchema),
-generalInfo: mongoose.model('GeneralInformation', generalInfo)};
+generalInfoModel: mongoose.model('GeneralInformation', generalInfo),
+scheduleSlotModel: mongoose.model('ScheduleSlot', scheduleSlot)};
 
 //export userschema as a class called User
 // module.exports = mongoose.model('User', userSchema);

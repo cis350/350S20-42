@@ -13,7 +13,8 @@ var User = schemas.userModel;
 var MedicalRequest = schemas.medRequestModel;
 var HospitalRequest = schemas.hosRequestModel;
 var Hospital = schemas.hosModel;
-var GeneralInformation = schemas.generalInfo;
+var GeneralInformation = schemas.generalInfoModel;
+var ScheduleSlot = schemas.scheduleSlotModel;
 
 var currentUser = null;
 
@@ -590,23 +591,35 @@ app.use('/addStaff', (req, res) => {
                                if (err) {
                                    res.json({'status': err});
                                } else {
-                                   //get hospitals to render the myHospital dashboard
-                                   var hospitals = [];
-                                   Hospital.find( (err, allHospitals) => {
-                                     if (err) {
-                                         console.log(err);
-                                         res.end();
-                                     } else {
-                                         allHospitals.forEach( (hospital) => {
-                                             currentUser.hospitalArray.forEach( (hospitalName) => {
-                                                if (hospital.name == hospitalName) {
-                                                   hospitals.push(hospital);
-                                                } 
-                                             });
-                                         });
-                                     }
-                                       res.render('myHospital', {user: currentUser, hospitals: hospitals});
-                                  });
+                                   if (!staff.employedAt) {
+                                       staff.employedAt = [];
+                                   }
+                                   
+                                   staff.employedAt.push(hospital.name);
+                                   
+                                   staff.save( (err) => {
+                                       if (err) {
+                                           res.json({'status': err});
+                                       } else {
+                                           //get hospitals to render the myHospital dashboard
+                                           var hospitals = [];
+                                           Hospital.find( (err, allHospitals) => {
+                                             if (err) {
+                                                 console.log(err);
+                                                 res.end();
+                                             } else {
+                                                 allHospitals.forEach( (hospital) => {
+                                                     currentUser.hospitalArray.forEach( (hospitalName) => {
+                                                        if (hospital.name == hospitalName) {
+                                                           hospitals.push(hospital);
+                                                        } 
+                                                     });
+                                                 });
+                                             }
+                                               res.render('myHospital', {user: currentUser, hospitals: hospitals});
+                                          });
+                                        }
+                                    });
                                }
                             });
                         }
@@ -656,22 +669,37 @@ app.use('/removeStaff', (req, res) => {
                                         res.json({'status': err});
                                     } else {
                                         //get all hospitals to render the myhospital dashboard
-                                        var hospitals = [];
-                                        Hospital.find( (err, allHospitals) => {
+                                        var index = -1;
+                                        for (var i = 0; i < staff.employedAt.length; i++) {
+                                            if (staff.employedAt[i] == hospital.name) {
+                                                index = i;
+                                            }
+                                        }
+                                        
+                                        staff.employedAt.splice(index, 1);
+                                        
+                                        staff.save( (err) => {
                                             if (err) {
-                                                console.log(err);
-                                                res.end();
+                                                res.json({'status': err});
                                             } else {
-                                                allHospitals.forEach( (hospital) => {
-                                                    currentUser.hospitalArray.forEach( (hospitalName) => {
-                                                        if (hospital.name == hospitalName) {
-                                                            hospitals.push(hospital);
-                                                        } 
-                                                    });
+                                                var hospitals = [];
+                                                Hospital.find( (err, allHospitals) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        res.end();
+                                                    } else {
+                                                        allHospitals.forEach( (hospital) => {
+                                                            currentUser.hospitalArray.forEach( (hospitalName) => {
+                                                                if (hospital.name == hospitalName) {
+                                                                    hospitals.push(hospital);
+                                                                } 
+                                                            });
+                                                        });
+                                                    }
+                                                    res.render('myHospital', {user: currentUser, hospitals: hospitals});
                                                 });
                                             }
-                                            res.render('myHospital', {user: currentUser, hospitals: hospitals});
-                                        });  
+                                        });
                                     }
                                 });
                             }
@@ -866,8 +894,72 @@ app.get('/generalInformation', function (req, res) {
 
 app.get('/addVaccineInfo', function (req, res) {
     res.render('addVaccineInfo', {user: currentUser, sent: ""});
-})
+});
 
+//Medical users can add slots for users to sign up to get vaccines at a certain hospital 
+app.use('/addScheduleSlots', function (req, res) {
+    ScheduleSlots.find( (err, allSlots) => {
+        if (err) {
+            res.end();
+        } else {
+            var mySlots = [];
+            
+            allSlots.forEach( (slot) => {
+               if (slot.doctor.name == currentUser.name) {
+                   mySlots.push(slot);
+               } 
+            });
+            
+            mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+            
+            res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: ""});
+        }
+    });
+});
+
+//this adds another slot to the schedule for this doctor
+app.use('/addNewSlot', function (req, res) {
+    ScheduleSlots.find( (err, allSlots) => {
+       if (err) {
+           res.end();
+       } else {
+           //check if slot at the same time
+           var doubleBooked = false;
+           var mySlots = []
+           allSlots.forEach( (slot) => {
+               if (slot.doctor.username == currentUser.username) {
+                   mySlots.push(slot);
+               }
+               if (slot.doctor.username == currentUser.username && slot.date.getTime() == req.body.enterDate.getTime()) {
+                   doubleBooked = true;
+               }
+           });
+           
+           if (doubleBooked) {
+               res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: "Oops! You double booked yourself, choose a different time."});
+           } else {
+               //if not, then add slot
+               var newSlot = new ScheduleSlot({
+                   doctor: currentUser,
+                   date: new Date(req.body.enterDate),
+                   vaccine: req.body.enterVaccine
+               });
+               
+               newSlot.save( (err) => {
+                  if (err) {
+                      res.json({'status': err});
+                  } else {
+                      res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: "Thank you for scheduling a time slot! Users appreciate you!"});
+                  }
+               });
+           }
+       }
+    });
+});
+
+//tab that medical users can use to accept user slot requests, and get special notes from the user
+
+//tab that users can see and request an available slot, and write a special note that gets sent to the doctor
 
 app.use('/public', express.static('public'));
 
