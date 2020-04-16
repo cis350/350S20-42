@@ -20,7 +20,7 @@ var medRequestSchema = new Schema({
 });
 
 var hosRequestSchema = new Schema({
-  name: {type: String, required: true, unique: false},
+  name: {type: String, required: true, unique: true},
   creator: {type: userSchema, required: true, unique: false},
   location: {type: String, required: true},
   website: String,
@@ -35,10 +35,19 @@ var hosSchema = new Schema({
     staffArray: {type: [userSchema]}
 });
 
+var generalInfo = new Schema({
+   publishedBy: {type: String, required: true},
+   hospitalName: {type: String, required: true},
+   date: Date,
+   body: String,
+   approved: Boolean
+});
+
 module.exports = {userModel: mongoose.model('User', userSchema),
 medRequestModel: mongoose.model('MedicalRequest', medRequestSchema),
 hosRequestModel: mongoose.model('HospitalRequest', hosRequestSchema),
-hosModel: mongoose.model('Hospital', hosSchema)};
+hosModel: mongoose.model('Hospital', hosSchema),
+generalInfo: mongoose.model('GeneralInformation', generalInfo)};
 
 //export userschema as a class called User
 // module.exports = mongoose.model('User', userSchema);

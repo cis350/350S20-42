@@ -1,0 +1,45 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Dashboard</title>
+</head>
+
+<body class="container">
+    <div class="topnav">
+        <a href="/home">Home</a>
+        <% if (user.hospitalOwner) {%>
+            <a href="/myHospital">My Hospital</a>
+        <% } %>
+        <a href="/myRequests">My Requests</a>
+        <% if (!user.medicalAccount) {%>
+            <a href="/medicalRequest">Medical Upgrade</a>
+        <% } %>
+        <% if (!user.hospitalOwner) {%>
+            <a href="/hospitalRequest">Hospital Creation</a>
+        <% } %>
+        <% if (user.medicalAccount) {%>
+            <a href="/addVaccineInfo">Add Vaccine Information</a>
+        <% } %>
+        <a class="active" href="/generalInformation">General Vaccine Information</a>
+        <a href="/">Logout</a>
+    </div>
+
+    <main>
+        <h1>General Vaccine Information</h1>
+
+        <h3>Here you can find the newest information from expert doctors about vaccines that you might consider.</h3>
+
+        <%if (posts) {%>
+            <%posts.forEach( (post) => { %>
+                <p><b>Doctor username:</b> <%= post.publishedBy %></p><br>
+                <p><b>Hospital of publication:</b> <%= post.hospitalName %></p> <br>
+                <p><b>Date of publication:</b> <%= post.date.toLocaleDateString("en-US") %></p> <br>
+                <p><%= post.body %></p>
+            <% }); %>
+        <% } else {%>
+            <p>Oh no! The doctors haven't come up with anything exciting yet.</p>
+        <% } %>
+        
+    </main>
+
+</body>

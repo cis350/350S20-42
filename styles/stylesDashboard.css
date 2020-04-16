@@ -42,6 +42,7 @@ p {
 
 b {
     font-family: sans-serif;
+    color: forestgreen;
 }
 
 input[type=submit] {

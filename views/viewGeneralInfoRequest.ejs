@@ -31,22 +31,24 @@
 <body class="container">
     <div class="topnav">
         <a href="/adminhome">Home</a>
-        <a class="active" href="/accountchange">Medical Accounts</a>
+        <a href="/accountchange">Medical Accounts</a>
         <a href="/hospitalcreation">Hospital Creation</a>
-        <a href="/generalInfoRequest">General Information Post Requests</a>
+        <a class="active" href="/generalInfoRequest">General Information Post Requests</a>
         <a href="/">Logout</a>
     </div>
 
     <main>
-        <h1>Detailed Upgrade Request: </h1>
-        <br><i>Account:</i> <%= request.creator.username %>
+        <h1>Detailed General Information Post Request: </h1>
+        <br><i>Account:</i> <%= request.publishedBy %>
+        <br><i>Hospital Name:</i> <%= request.hospitalName %>
+        <br><i>Date:</i> <%= request.date.toLocaleDateString("en-US"); %>
+        <br><i>Post:</i> <%= request.body %>
         <br>
-        <br><i>Description:</i> <%= request.description %>
         <br>
-        <br><form action="/acceptAccountRequest?name=<%= request.creator.username %>" method="post">
-            <input type="submit" class = "btn info" value="Accept Request">
+            <form action="/acceptGeneralInfoRequest?publishedBy=<%= request.publishedBy %>&date=<%= request.date.getTime()%>" method="post">
+                <input type="submit" class = "btn info" value="Accept Request">
             </form>
-            <form action="/rejectAccountRequest?name=<%= request.creator.username %>" method="post">
+            <form action="/rejectGeneralInfoRequest?publishedBy=<%= request.publishedBy %>&date=<%= request.date.getTime()%>" method="post">
             <input type="submit" class = "btn reject" value="Reject Request">
             </form>
     </main>
