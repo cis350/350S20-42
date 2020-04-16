@@ -35,6 +35,7 @@
                 <p><b>Hospital of publication:</b> <%= post.hospitalName %></p> <br>
                 <p><b>Date of publication:</b> <%= post.date.toLocaleDateString("en-US") %></p> <br>
                 <p><%= post.body %></p>
+                <hr>
             <% }); %>
         <% } else {%>
             <p>Oh no! The doctors haven't come up with anything exciting yet.</p>

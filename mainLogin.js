@@ -612,7 +612,6 @@ app.use('/addGeneralVaccineInformation', function (req, res) {
             body: req.body.enterInformation,
             approved: false
         });
-        console.log(newInformation.hospitalName);
         newInformation.save( (err) => {
            if (err) {
                console.log(err);
@@ -637,7 +636,14 @@ app.get('/generalInfoRequest', function (req, res) {
             } else if (allInfo.length == 0) {
                 res.render('generalInfoRequest', {user: currentUser, requests: null});
             } else {
-                res.render('generalInfoRequest', {user: currentUser, requests: allInfo});
+                var toReturn = [];
+                allInfo.forEach( (request) => {
+                    if (!request.approved) {
+                        toReturn.push(request);
+                    }
+                });
+                toReturn.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+                res.render('generalInfoRequest', {user: currentUser, requests: toReturn});
             }
         });
     } else {
@@ -737,7 +743,7 @@ app.get('/generalInformation', function (req, res) {
                  toRender.push(info);
              }
           });
-          toRender.sort(function(a, b) {return a.date.getTime() - b.date.getTime()});
+          toRender.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
           res.render('generalInformation', {user: currentUser, posts: toRender});
       }
    });
