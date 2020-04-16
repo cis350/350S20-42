@@ -10,6 +10,7 @@ var userSchema = new Schema({
   password: {type: String, required: true},
   hospitalOwner: Boolean,
   staffArray: this,
+  hospitalArray: [String],
   medicalAccount: Boolean,
   sentMedicalRequest: Boolean
 });
@@ -29,7 +30,7 @@ var hosRequestSchema = new Schema({
 
 var hosSchema = new Schema({
     owner: {type: userSchema, required: true, unique: false},
-    name: {type: String, required: true, unique: true},
+    name: {type: String, required: true},
     location: {type: String, required: true},
     website: String,
     staffArray: {type: [userSchema]}
