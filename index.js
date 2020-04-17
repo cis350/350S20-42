@@ -103,6 +103,7 @@ client.connect(err => {
 var schemas = require('./User.js');
 var Person = schemas.userModel;
 var PersonVaccine = schemas.personVaccineSchema;
+var Hospital = schemas.hosModel;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -129,6 +130,22 @@ app.use('/all', (req, res) => {
         } else {
            res.json(allPeople );
         }
+    });
+});
+
+app.use('/hospitals', (req, res) => {
+    Hospital.find( (err, allHospitals) => {
+      if (err) {
+        res.json( { 'status' : err } );
+      } else if (allHospitals.length == 0) {
+         res.json( { 'status' : 'no hospitals' } );
+      } else {
+         var hosNames = []
+         allHospitals.forEach( (hospital) => {
+             hosNames.push(hospital.name);
+         });
+         res.json(hosNames);
+      }
     });
 });
 
