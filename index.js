@@ -174,19 +174,24 @@ app.use('/addImage', (req, res) => {
     var username = req.query.username;
     var password = req.query.password;
     var imgPath = req.query.imgPath;
-    Person.findOne( { username: username, password: password },
-        (err, person) => {
+    Person.findOne( { username: username, password: password }, (err, person) => {
         if (err) {
             res.json( { 'status' : err } );
-        }else if (!person) {   res.json( { 'status' : 'no person' } );
-    }else {
-       person.img.data = fs.readFileSync(imgPath);
-       person.img.contentType = 'image/png';
-       person.save( (err) => {
-         if (err) {    res.json( { 'status' : err } );
-        }else {
-           res.json( { 'status' : 'success' } );}});
-       }});});
+        } else if (!person) {
+            res.json( { 'status' : 'no person' } );
+        } else {
+            person.img.data = fs.readFileSync(imgPath);
+            person.img.contentType = 'image/png';
+            person.save( (err) => {
+            if (err) {
+              res.json( { 'status' : err } );
+            } else {
+              res.json( { 'status' : 'success' } );
+            }
+          });
+       }
+   });
+});
 
 app.use('/addVaccine', (req, res) => {
     var username = req.query.username;
@@ -196,20 +201,25 @@ app.use('/addVaccine', (req, res) => {
     var hospitalId = req.query.hId;
     var newVaccine = new PersonVaccine ({
         id: vId,
-    date: vDate,
-    hospitalId: hospitalId,
-    verified: false
+        date: vDate,
+        hospitalId: hospitalId,
+        verified: false
     });
-    Person.findOne( { username: username, password: password },
-        (err, person) => {
-        if (err) {
-            res.json( { 'status' : err } );
-        }else if (!person) {   res.json( { 'status' : 'no person' } );
-    }else {
-       person.vaccines.push(newVaccine);
 
-       person.save( (err) => {
-         if (err) {    res.json( { 'status' : err } );
-        }else {
-           res.json( { 'status' : 'success' } );}});
-       }});});
+    Person.findOne( { username: username, password: password }, (err, person) => {
+        if (err) {
+           res.json( { 'status' : err } );
+        } else if (!person) {
+           res.json( { 'status' : 'no person' } );
+        } else {
+           person.vaccines.push(newVaccine);
+           person.save( (err) => {
+             if (err) {
+               res.json( { 'status' : err } );
+             } else {
+               res.json( { 'status' : 'success' } );
+             }
+         });
+       }
+   });
+});
