@@ -1,16 +1,30 @@
 var mongoose = require('mongoose');
 
-//This is gonna be something different depending on where the database is located.
+//Atlas Database (Controlled by Ali)
+// const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
+// mongoose.connect(uri);
+
+// Local Database
 mongoose.connect('mongodb://localhost:27017/database');
 
 var Schema = mongoose.Schema;
 
+var personVaccineSchema = new Schema({
+	id: String,
+	date: {type: Date, default: Date.now},
+	hospitalId: String,
+	verified: Boolean
+});
+
 var userSchema = new Schema({
   username: {type: String, required: true},
   password: {type: String, required: true},
+  fullName: String,
+  img: {data: Buffer, contentType:String},
+  vaccines: [personVaccineSchema],
   hospitalOwner: Boolean,
-  hospitalArray: [String],
-  employedAt: [String],
+	hospitalArray: [String],
+	employedAt: [String],
   medicalAccount: Boolean,
   sentMedicalRequest: Boolean
 });
@@ -58,8 +72,6 @@ module.exports = {userModel: mongoose.model('User', userSchema),
 medRequestModel: mongoose.model('MedicalRequest', medRequestSchema),
 hosRequestModel: mongoose.model('HospitalRequest', hosRequestSchema),
 hosModel: mongoose.model('Hospital', hosSchema),
+personVaccineSchema: mongoose.model('PersonVaccine', personVaccineSchema),
 generalInfoModel: mongoose.model('GeneralInformation', generalInfo),
 scheduleSlotModel: mongoose.model('ScheduleSlot', scheduleSlot)};
-
-//export userschema as a class called User
-// module.exports = mongoose.model('User', userSchema);
