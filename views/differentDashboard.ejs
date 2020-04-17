@@ -7,11 +7,29 @@
 <body class="container">
     <div class="topnav">
         <a class="active" href="/home">Home</a>
-        <a href="/myHospital">My Hospital</a>
+        <% if (user.hospitalOwner) {%>
+            <a href="/myHospital">My Hospital</a>
+        <% } %>
         <a href="/myRequests">My Requests</a>
-        <a href="/medicalRequest">Medical Upgrade</a>
-        <a href="/hospitalRequest">Hospital Creation</a>
-        <a href="/">Logout</a>
+        <% if (!user.medicalAccount) {%>
+            <a href="/medicalRequest">Medical Upgrade</a>
+        <% } %>
+        <% if (!user.hospitalOwner) {%>
+            <a href="/hospitalRequest">Hospital Creation</a>
+        <% } %>
+        <% if (user.medicalAccount) {%>
+            <a href="/addVaccineInfo">Add Vaccine Information</a>
+        <% } %>
+        <a href="/generalInformation">General Vaccine Information</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addScheduleSlots">Add Schedule Openings</a>
+        <% } %>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/listScheduleRequest">Vaccine Request List</a>
+        <% } %>
+        <a href="/mySchedule">My Schedule</a>
+        <a href="/logout">Logout</a>
     </div>
 
     <main>
@@ -22,6 +40,11 @@
         <b>Name: </b> <span style="font-family: sans-serif;"><%= user.username %></span><br>
         <b>Is hospital owner? </b><% if (user.hospitalOwner) {%>
         <span style="font-family: sans-serif;">Yes</span>
+        <br>
+            <% user.hospitalArray.forEach( (name) => { %>
+                 <br><i>Owned Hospital:</i> <%= name %>
+                 <br>
+            <% }); %>
         <%} else {%>
         <span style="font-family: sans-serif;">No</span>
         <%} %> <br>
@@ -30,6 +53,16 @@
         <%} else {%>
         <span style="font-family: sans-serif;">No</span>
         <%} %>
+        
+        <!--- forms in case we have to create users again
+        <form action="/beHospitalOwner" method="post">
+            <input type="Submit" value="hospital">
+        </form>
+        
+        <form action="/beMedicalAccount" method="post">
+            <input type="Submit" value="medical">
+        </form> 
+        --->
     </main>
 
 </body>

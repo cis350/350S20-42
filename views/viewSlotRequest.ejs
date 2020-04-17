@@ -4,34 +4,9 @@
     <title>Vaccine App Dashboard</title>
 </head>
 
-<style>
-.btn {
-  background-color: inherit;
-  cursor: pointer;
-  display: inline-block;
-}
-/* Green */
-.info {
-  background-color: black;
-  color: white;
-}
-.info:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-/* Red */
-.reject {
-  color: red;
-}
-.reject:hover {
-  background: #f44336;
-  color: white;
-}
-</style>
-
 <body class="container">
     <div class="topnav">
-        <a class="active" href="/home">Home</a>
+        <a href="/home">Home</a>
         <% if (user.hospitalOwner) {%>
             <a href="/myHospital">My Hospital</a>
         <% } %>
@@ -51,23 +26,33 @@
         <% } %>
         <a href="/viewAvailableSlots">Schedule Vaccine</a>
         <% if (user.medicalAccount) {%>
-            <a href="/listScheduleRequest">Vaccine Request List</a>
+            <a class="active" href="/listScheduleRequest">Vaccine Request List</a>
         <% } %>
         <a href="/mySchedule">My Schedule</a>
         <a href="/logout">Logout</a>
     </div>
 
     <main>
-        <h1>Submit a Medical Account Request</h1>
-        <p>State your case:</p>
-        <form action="/createMedRequest" id="request" method="post">
-          <textarea name = "input"
-                    rows = "3"
-                    cols = "80"></textarea> <br>
-          <input type="submit" class="btn info" value="Submit">
-        </form>
-        <%= sent %> <br>
+        <h1>Vaccine Scheduling Requests</h1>
 
+        <h3>Please choose whether to accept or reject this request.</h3>
+
+        
+        <p><i>Hospital: </i> <%= slot.hospital %></p> <br>
+        <p><i>Doctor: </i> <%= slot.doctor.username %></p> <br>
+        <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p> <br>
+        <p><i>Patient: </i> <%=slot.patient.username%></p>
+        <p><i>Vaccine: </i> <%= slot.vaccine %></p> <br>
+        <p><i>Special Notes: </i> <%= slot.specialNotes %></p>
+        
+        <form action="/acceptSlotRequest?patient=<%=slot.patient.username %>&date=<%=request.date.getTime()%>" method="post">
+            <input type="submit" value="accept">
+        </form>
+        
+        <form action="/rejectSlotRequest?patient=<%=slot.patient.username %>&date=<%=request.date.getTime()%>" method="post">
+            <input type="submit" value="accept">
+        </form>
+        
     </main>
 
 </body>

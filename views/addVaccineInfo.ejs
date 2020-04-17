@@ -1,37 +1,12 @@
 <head>
     <script src="../mainLogin.js"></script>
     <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
-    <title>Vaccine App Dashboard</title>
+    <title>Add Vaccine Information</title>
 </head>
-
-<style>
-.btn {
-  background-color: inherit;
-  cursor: pointer;
-  display: inline-block;
-}
-/* Green */
-.info {
-  background-color: black;
-  color: white;
-}
-.info:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-/* Red */
-.reject {
-  color: red;
-}
-.reject:hover {
-  background: #f44336;
-  color: white;
-}
-</style>
 
 <body class="container">
     <div class="topnav">
-        <a class="active" href="/home">Home</a>
+        <a href="/home">Home</a>
         <% if (user.hospitalOwner) {%>
             <a href="/myHospital">My Hospital</a>
         <% } %>
@@ -43,7 +18,7 @@
             <a href="/hospitalRequest">Hospital Creation</a>
         <% } %>
         <% if (user.medicalAccount) {%>
-            <a href="/addVaccineInfo">Add Vaccine Information</a>
+            <a class= "active" href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
         <a href="/generalInformation">General Vaccine Information</a>
         <% if (user.medicalAccount) {%>
@@ -58,16 +33,26 @@
     </div>
 
     <main>
-        <h1>Submit a Medical Account Request</h1>
-        <p>State your case:</p>
-        <form action="/createMedRequest" id="request" method="post">
-          <textarea name = "input"
-                    rows = "3"
-                    cols = "80"></textarea> <br>
-          <input type="submit" class="btn info" value="Submit">
+        <h1>Hello, respected doctor!</h1>
+        
+        <h3>This is where you can add information about any vaccine you please, as to update the public about side effects and groundbreaking research.</h3>
+        
+        <p>Please submit a request to publish general information here: </p>
+        
+        <p><%= sent %></p>
+        
+        <form action="/addGeneralVaccineInformation" method="post">
+            <label for="enterHospital">Enter the hospital name this post is associated with: </label>
+            <br>
+            <input type="text" name="enterHospital">
+            <br>
+            <label for="enterInformation">Enter information: </label> 
+            <br>
+            <textarea name="enterInformation" rows = "3" cols = "80"></textarea>
+            <br>
+            <input type="Submit" value="Send Request">
         </form>
-        <%= sent %> <br>
-
+        
     </main>
 
 </body>

@@ -31,20 +31,21 @@
 <body class="container">
     <div class="topnav">
         <a href="/adminhome">Home</a>
-        <a class="active" href="/accountchange">Medical Accounts</a>
+        <a href="/accountchange">Medical Accounts</a>
         <a href="/hospitalcreation">Hospital Creation</a>
-        <a href="/generalInfoRequest">General Information Post Requests</a>
+        <a class="active" href="/generalInfoRequest">General Information Post Requests</a>
         <a href="/logout">Logout</a>
     </div>
 
     <main>
-        <h1>Medical Account Requests: </h1>
+        <h1>General Information Post List: </h1>
         <% if (requests) {%>
           <% requests.forEach( (request) => { %>
-              <br><i>Account:</i> <%= request.creator.username %>
-              <br><form action="/viewAccountRequest?name=<%= request.creator.username %>" method="post">
-                  <input type="submit" class = "btn info" value="View More">
-                  </form>
+            <br><i>Account:</i> <%= request.publishedBy %>
+            <br><i>Date:</i> <%= request.date.toLocaleDateString('en-US'); %>
+            <br><form action="/viewGeneralInfoRequest?publishedBy=<%=request.publishedBy %>&date=<%=request.date.getTime()%>" method="post">
+                    <input type="submit" class="btn info" value="View More">
+                </form>
           <% }); %>
           <% } %>
     </main>

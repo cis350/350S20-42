@@ -33,18 +33,20 @@
         <a href="/adminhome">Home</a>
         <a href="/accountchange">Medical Accounts</a>
         <a href="/hospitalcreation">Hospital Creation</a>
-        <a href="/">Logout</a>
+        <a href="/generalInfoRequest">General Information Post Requests</a>
+        <a href="/logout">Logout</a>
     </div>
 
     <main>
         <h1>Hospital List: </h1>
         <% if (hospitals) {%>
           <% hospitals.forEach( (request) => { %>
-            <br><i>Account:</i> <%= request.owner.username %>
+            <br><i>Account:</i> <%= request.owner.name %>
             <br><i>Hospital Name:</i> <%= request.name %>
             <br><i>Hospital Location:</i> <%= request.location %>
             <br><i>Website:</i> <%= request.website %>
             <br>
+            <br><i>Description:</i> <%= request.description %>
           <% }); %>
           <% } %>
     </main>

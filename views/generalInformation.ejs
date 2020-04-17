@@ -4,34 +4,9 @@
     <title>Vaccine App Dashboard</title>
 </head>
 
-<style>
-.btn {
-  background-color: inherit;
-  cursor: pointer;
-  display: inline-block;
-}
-/* Green */
-.info {
-  background-color: black;
-  color: white;
-}
-.info:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-/* Red */
-.reject {
-  color: red;
-}
-.reject:hover {
-  background: #f44336;
-  color: white;
-}
-</style>
-
 <body class="container">
     <div class="topnav">
-        <a class="active" href="/home">Home</a>
+        <a href="/home">Home</a>
         <% if (user.hospitalOwner) {%>
             <a href="/myHospital">My Hospital</a>
         <% } %>
@@ -45,7 +20,7 @@
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
-        <a href="/generalInformation">General Vaccine Information</a>
+        <a class="active" href="/generalInformation">General Vaccine Information</a>
         <% if (user.medicalAccount) {%>
             <a href="/addScheduleSlots">Add Schedule Openings</a>
         <% } %>
@@ -58,16 +33,22 @@
     </div>
 
     <main>
-        <h1>Submit a Medical Account Request</h1>
-        <p>State your case:</p>
-        <form action="/createMedRequest" id="request" method="post">
-          <textarea name = "input"
-                    rows = "3"
-                    cols = "80"></textarea> <br>
-          <input type="submit" class="btn info" value="Submit">
-        </form>
-        <%= sent %> <br>
+        <h1>General Vaccine Information</h1>
 
+        <h3>Here you can find the newest information from expert doctors about vaccines that you might consider.</h3>
+
+        <%if (posts) {%>
+            <%posts.forEach( (post) => { %>
+                <p><b>Doctor username:</b> <%= post.publishedBy %></p><br>
+                <p><b>Hospital of publication:</b> <%= post.hospitalName %></p> <br>
+                <p><b>Date of publication:</b> <%= post.date.toLocaleDateString("en-US") %></p> <br>
+                <p><%= post.body %></p>
+                <hr>
+            <% }); %>
+        <% } else {%>
+            <p>Oh no! The doctors haven't come up with anything exciting yet.</p>
+        <% } %>
+        
     </main>
 
 </body>
