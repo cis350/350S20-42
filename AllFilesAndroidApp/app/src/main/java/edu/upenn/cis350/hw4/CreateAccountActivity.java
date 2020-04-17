@@ -39,17 +39,17 @@ public class CreateAccountActivity extends AppCompatActivity {
         try {
             String[] strArr = {usernameText.getText().toString(), passwordText.getText().toString(),
                     fullNameText.getText().toString()};
-            URL url = new URL("http://10.0.2.2:3000/create?username="+strArr[0]+
+            URL url = new URL("http:///10.0.2.2:3000/create?username="+strArr[0]+
                     "&password="+strArr[1]+"&fullName="+strArr[2]);
             URL[] inputs = new URL[1];
             inputs[0] = url;
-            AccessWebAddVaccine task = new AccessWebAddVaccine();
+            AccessWebRunURL task = new AccessWebRunURL();
             task.execute(inputs);
             task.get();
         } catch (Exception e) {
             throw new UnsupportedOperationException();
         }
-
+        finish();
     }
 
 

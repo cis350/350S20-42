@@ -10,8 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import edu.upenn.cis350.hw4.ui.login.LoginActivity;
-
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void buttonClick(View v) {
         System.out.println("nn");
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i = new Intent(this, Login2Activity.class);
         i.putExtra("option", currentOption);
         startActivity(i);
     }

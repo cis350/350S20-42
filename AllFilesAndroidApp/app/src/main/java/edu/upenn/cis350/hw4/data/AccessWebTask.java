@@ -79,7 +79,7 @@ public class AccessWebTask extends AsyncTask<String, String, Person[]> {
             throw new IllegalStateException();
         } catch (Exception e) {
             System.out.print(e.toString());
-            return new Person[0];
+            return null;
         }
 
     }

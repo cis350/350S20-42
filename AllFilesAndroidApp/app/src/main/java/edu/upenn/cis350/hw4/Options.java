@@ -33,6 +33,8 @@ public class Options extends AppCompatActivity {
             }
         });
 
+
+
         Intent i = getIntent();
         data = (Person)i.getSerializableExtra("data");
 

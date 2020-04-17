@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewInfoActivity"></activity>
+        <activity android:name=".Login2Activity"></activity>
+        <activity android:name=".ViewInfoActivity" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".ImagePickerActivity" />
         <activity
@@ -37,7 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QuizActivity" />
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 
 import java.net.URL;
 
+import edu.upenn.cis350.hw4.data.AccessWebTask;
 import edu.upenn.cis350.hw4.data.Person;
 
 public class ViewInfoActivity extends AppCompatActivity {
@@ -48,11 +49,19 @@ public class ViewInfoActivity extends AppCompatActivity {
         String email = emailText.getText().toString();
         String blood = bloodText.getText().toString();
         String dob = dobText.getText().toString();
+        String password = data.getPassword();
 
-        URL[] urls = URL[1];
-        urls[0] = new URL("http://10.0.2.2:3000/editInfo?username=" + username+
-                "&password="+password+"&fullName="+fullName+"&email="+email+
-                "&blood="+blood+"&dob="+dob);
+        URL[] urls = new URL[1];
+        try {
+            urls[0] = new URL("http://10.0.2.2:3000/editInfo?username=" + username +
+                    "&password=" + password + "&fullName=" + fullName + "&email=" + email +
+                    "&blood=" + blood + "&dob=" + dob);
+            AccessWebTask task = new AccessWebTask();
+            task.execute();
+            data = task.get()[0];
+        } catch (Exception e){
+            throw new UnsupportedOperationException();
+        }
     }
 
     void backClick(View v){

@@ -3,9 +3,6 @@ package edu.upenn.cis350.hw4;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -54,15 +51,15 @@ public class AddOneVaccine extends AppCompatActivity {
     public void addClick(View v) {
 
         try {
-            String[] strArr = {data.getUserame(), data.getPassword(),
+            String[] strArr = {data.getUsername(), data.getPassword(),
                     idText.getText().toString(), dateText.getText().toString(),
                     hospitalText.getText().toString()};
-            URL url = new URL("http://10.0.2.2:3000/addVaccine?username="+strArr[0]+
+            URL url = new URL("http://localhost:3000/addVaccine?username="+strArr[0]+
                     "&password="+strArr[1]+"&vId="+strArr[2]+"&vDate="+strArr[3]+
                     "&hospitalId="+strArr[4]);
             URL[] inputs = new URL[1];
             inputs[0] = url;
-            AccessWebAddVaccine task = new AccessWebAddVaccine();
+            AccessWebRunURL task = new AccessWebRunURL();
             task.execute(inputs);
             task.get();
             finish();
