@@ -24,6 +24,11 @@
         <% if (user.medicalAccount) {%>
             <a href="/addScheduleSlots">Add Schedule Openings</a>
         <% } %>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/listScheduleRequest">Vaccine Request List</a>
+        <% } %>
+        <a href="/mySchedule">My Schedule</a>
         <a href="/logout">Logout</a>
     </div>
 

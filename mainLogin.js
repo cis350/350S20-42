@@ -941,6 +941,7 @@ app.use('/addNewSlot', function (req, res) {
                //if not, then add slot
                var newSlot = new ScheduleSlot({
                    doctor: currentUser,
+                   hospital: req.body.enterHospital,
                    date: new Date(req.body.enterDate),
                    vaccine: req.body.enterVaccine
                });
@@ -958,8 +959,155 @@ app.use('/addNewSlot', function (req, res) {
 });
 
 //tab that medical users can use to accept user slot requests, and get special notes from the user
+app.use('/viewAvailableSlots', function (req, res) {
+   //have to gather slots that do not have a patient and then display those 
+    ScheduleSlot.find((err, allSlots) => {
+        var openSlots = [];
+        
+        allSlots.forEach( (slot) => {
+           if (!slot.patient) {
+               openSlots.push(slot);
+           } 
+        });
+        
+        res.render('availableSlots', {user: currentUser, schedule: openSlots});
+    });
+});
+
+//medical user chooses to schedule with this particular slot
+app.use('/scheduleRequest', function (req, res) {
+    var doctorName = req.query.doctor;
+    var date = req.query.date;
+    
+    ScheduleSlot.find( (err, allSlots) => {
+        var request;
+        allSlots.forEach( (slot) => {
+           if (slot.doctor.username == doctorName && slot.date.getTime() == date) {
+               request = slot;
+           } 
+        });
+        res.render('/finishScheduleRequest', {user: currentUser, request: request});
+    });
+});
 
 //tab that users can see and request an available slot, and write a special note that gets sent to the doctor
+app.use('/processScheduleRequest', function (req, res) {
+    var note = req.body.enterNote;
+    var doctorName = req.query.doctor;
+    var date = req.query.date;
+    
+    ScheduleSlot.find( (err, allSlots) => {
+        var request;
+        allSlots.forEach( (slot) => {
+           if (slot.doctor.username == doctorName && slot.date.getTime() == date) {
+               request = slot;
+           } 
+        });
+        
+        request.patient = currentUser;
+        request.specialNotes = note;
+        request.save( (err) => {
+            if (err) {
+                res.render('differentDashboard', {user: currentUser});
+            } else {
+                res.render('/mySchedule', {user: currentUser});
+            }
+        });
+    });
+});
+
+//tab that users can see what approved slots they have
+app.use('/mySchedule', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
+        var mySlots = [];
+        
+        allSlots.forEach( (slot) => {
+            if (slot.patient && slot.patient.username == currentUser.username && slot.approved) {
+                mySlots.push (slot);
+            } 
+        });
+        mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+        res.render('/mySchedule', {user: currentUser, schedule: mySlots});
+    });
+});
+
+//tab that doctors can view a list of requests for vaccines they sent out
+app.use('/listScheduleRequest', function (req, res) {
+    if (currentUser.medicalAccount) {
+        ScheduleSlot.find( (err, allSlots) => {
+            var mySlots = [];
+            
+            allSlots.forEach( (slot) => {
+               if (slot.doctor.username == currentUser.username && !slot.approved) {
+                   mySlots.push(slot);
+               }
+            });
+            
+            res.render('listScheduleRequest', {user: currentUser, schedule: mySlots});
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
+
+//doctors can view and approve a specific vaccine they requested to view
+app.use('/viewSlotRequest', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
+       var slotToView;
+        
+        allSlots.forEach( (slot) => {
+            if (slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime == req.query.date) {
+                slotToView = slot;
+            }
+        });
+        
+        res.render('viewSlotRequest', {user: currentUser, request: slotToView});
+    });
+});
+
+//doctor accepted a specific vaccine slot
+app.use('/acceptSlotRequest', function (req, res) {
+    if (currentUser.medicalAccount) {
+        ScheduleSlot.find( (err, allSlots) => {
+           var slotToAccept;
+            
+            allSlots.forEach( (slot) => {
+               if (slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+                   slotToAccept = slot;
+               } 
+            });
+            
+            slot.accepted = true;
+            
+            slot.save( (err) => {
+               if (err) {
+                   res.json({'status': err});
+               } else {
+                   res.render('differentDashboard', {user: currentUser});
+               }
+            });
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
+
+//doctor rejected a specific vaccine slot
+app.use('/rejectSlotRequest', function (req, res) {
+    if (currentUser.medicalAccount) {
+        ScheduleSlot.find( (err, allSlots) => {
+            allSlots.forEach( (slot) => {
+                if (slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+                    slot.remove();
+                }    
+            });
+            
+            res.render('differentDashboard', {user: currentUser});
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
 
 app.use('/public', express.static('public'));
 
