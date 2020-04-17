@@ -100,8 +100,8 @@ client.connect(err => {
 });
 
 
-var schemas = require('./Person.js');
-var Person = schemas.personSchema;
+var schemas = require('./User.js');
+var Person = schemas.userModel;
 var PersonVaccine = schemas.personVaccineSchema;
 
 app.use('/create', (req, res) => {
