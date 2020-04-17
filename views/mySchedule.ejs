@@ -38,11 +38,11 @@
         <h3>These are all of the vaccines you have scheduled!</h3>
         
         <%schedule.forEach( (slot) => { %>
-            <p><i>Hospital: </i> <%= request.hospital %></p> <br>
-            <p><i>Doctor: </i> <%= request.doctor %></p> <br>
-            <p><i>Date: </i> <%= request.date.toLocaleDateString("en-US")%> <%= request.date.toLocaleTimeString("en-US")%></p> <br>
-            <p><i>Vaccine: </i> <%= request.vaccine %></p> <br>
-            <p><i>Notes: </i> <%= request.specialNotes %></p>
+            <p><i>Hospital: </i> <%= slot.hospital %></p> 
+            <p><i>Doctor: </i> <%= slot.doctor.username %></p>
+            <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p>
+            <p><i>Vaccine: </i> <%= slot.vaccine %></p>
+            <p><i>Notes: </i> <%= slot.specialNotes %></p>
             <hr>
         <% }); %>
         

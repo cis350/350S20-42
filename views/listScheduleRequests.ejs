@@ -38,12 +38,15 @@
 
         <% if (schedule) {%>
           <% schedule.forEach( (slot) => { %>
-            <p><i>Hospital: </i> <%= slot.hospital %></p> <br>
-            <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p> <br>
-            <p><i>Patient: </i> <%=slot.patient.username%></p>
-            <br><form action="/viewSlotRequest?patient=<%=slot.patient.username %>&date=<%=request.date.getTime()%>" method="post">
-                    <input type="submit" class="btn info" value="View More">
+            <% if (slot.patient && !slot.approved) {%> 
+                <p><i>Hospital: </i> <%= slot.hospital %></p>
+                <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p>
+                <p><i>Patient: </i> <%=slot.patient.username%></p>
+                <form action="/viewSlotRequest?patient=<%=slot.patient.username %>&date=<%=slot.date.getTime()%>" method="post">
+                        <input type="submit" class="btn info" value="View More">
                 </form>
+                <hr>
+            <% } %>
           <% }); %>
           <% } %>
     </main>

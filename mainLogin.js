@@ -897,15 +897,15 @@ app.get('/addVaccineInfo', function (req, res) {
 });
 
 //Medical users can add slots for users to sign up to get vaccines at a certain hospital 
-app.use('/addScheduleSlots', function (req, res) {
-    ScheduleSlots.find( (err, allSlots) => {
+app.get('/addScheduleSlots', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
         if (err) {
             res.end();
         } else {
             var mySlots = [];
             
             allSlots.forEach( (slot) => {
-               if (slot.doctor.name == currentUser.name) {
+               if (slot.doctor.username == currentUser.username) {
                    mySlots.push(slot);
                } 
             });
@@ -919,19 +919,20 @@ app.use('/addScheduleSlots', function (req, res) {
 
 //this adds another slot to the schedule for this doctor
 app.use('/addNewSlot', function (req, res) {
-    ScheduleSlots.find( (err, allSlots) => {
+    ScheduleSlot.find( (err, allSlots) => {
        if (err) {
            res.end();
        } else {
            //check if slot at the same time
            var doubleBooked = false;
-           var mySlots = []
+           var mySlots = [];
+           var date = new Date(req.body.enterDate);
            allSlots.forEach( (slot) => {
                if (slot.doctor.username == currentUser.username) {
                    mySlots.push(slot);
-               }
-               if (slot.doctor.username == currentUser.username && slot.date.getTime() == req.body.enterDate.getTime()) {
-                   doubleBooked = true;
+                   if (slot.date.getTime() == date.getTime()) {
+                       doubleBooked = true;
+                   }
                }
            });
            
@@ -986,7 +987,7 @@ app.use('/scheduleRequest', function (req, res) {
                request = slot;
            } 
         });
-        res.render('/finishScheduleRequest', {user: currentUser, request: request});
+        res.render('finishScheduleRequest', {user: currentUser, request: request});
     });
 });
 
@@ -1010,7 +1011,17 @@ app.use('/processScheduleRequest', function (req, res) {
             if (err) {
                 res.render('differentDashboard', {user: currentUser});
             } else {
-                res.render('/mySchedule', {user: currentUser});
+                ScheduleSlot.find( (err, allSlots) => {
+                    var mySlots = [];
+
+                    allSlots.forEach( (slot) => {
+                        if (slot.patient && slot.patient.username == currentUser.username && slot.approved) {
+                            mySlots.push (slot);
+                        } 
+                    });
+                    mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+                    res.render('mySchedule', {user: currentUser, schedule: mySlots});
+                });
             }
         });
     });
@@ -1023,11 +1034,12 @@ app.use('/mySchedule', function (req, res) {
         
         allSlots.forEach( (slot) => {
             if (slot.patient && slot.patient.username == currentUser.username && slot.approved) {
-                mySlots.push (slot);
+                
+                mySlots.push(slot);
             } 
         });
         mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
-        res.render('/mySchedule', {user: currentUser, schedule: mySlots});
+        res.render('mySchedule', {user: currentUser, schedule: mySlots});
     });
 });
 
@@ -1043,7 +1055,7 @@ app.use('/listScheduleRequest', function (req, res) {
                }
             });
             
-            res.render('listScheduleRequest', {user: currentUser, schedule: mySlots});
+            res.render('listScheduleRequests', {user: currentUser, schedule: mySlots});
         });
     } else {
         res.render('differentDashboard', {user: currentUser});
@@ -1056,7 +1068,7 @@ app.use('/viewSlotRequest', function (req, res) {
        var slotToView;
         
         allSlots.forEach( (slot) => {
-            if (slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime == req.query.date) {
+            if (slot.patient && slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
                 slotToView = slot;
             }
         });
@@ -1072,14 +1084,14 @@ app.use('/acceptSlotRequest', function (req, res) {
            var slotToAccept;
             
             allSlots.forEach( (slot) => {
-               if (slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+               if (slot.patient && slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
                    slotToAccept = slot;
                } 
             });
             
-            slot.accepted = true;
+            slotToAccept.approved = true;
             
-            slot.save( (err) => {
+            slotToAccept.save( (err) => {
                if (err) {
                    res.json({'status': err});
                } else {
@@ -1097,7 +1109,7 @@ app.use('/rejectSlotRequest', function (req, res) {
     if (currentUser.medicalAccount) {
         ScheduleSlot.find( (err, allSlots) => {
             allSlots.forEach( (slot) => {
-                if (slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+                if (slot.patient && slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
                     slot.remove();
                 }    
             });

@@ -38,19 +38,19 @@
         <h3>Please choose whether to accept or reject this request.</h3>
 
         
-        <p><i>Hospital: </i> <%= slot.hospital %></p> <br>
-        <p><i>Doctor: </i> <%= slot.doctor.username %></p> <br>
-        <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p> <br>
-        <p><i>Patient: </i> <%=slot.patient.username%></p>
-        <p><i>Vaccine: </i> <%= slot.vaccine %></p> <br>
-        <p><i>Special Notes: </i> <%= slot.specialNotes %></p>
+        <p><i>Hospital: </i> <%= request.hospital %></p> 
+        <p><i>Doctor: </i> <%= request.doctor.username %></p> 
+        <p><i>Date: </i> <%= request.date.toLocaleDateString("en-US")%> <%= request.date.toLocaleTimeString("en-US")%></p> 
+        <p><i>Patient: </i> <%=request.patient.username%></p>
+        <p><i>Vaccine: </i> <%= request.vaccine %></p>  
+        <p><i>Special Notes: </i> <%= request.specialNotes %></p>
         
-        <form action="/acceptSlotRequest?patient=<%=slot.patient.username %>&date=<%=request.date.getTime()%>" method="post">
+        <form action="/acceptSlotRequest?patient=<%=request.patient.username %>&date=<%=request.date.getTime()%>" method="post">
             <input type="submit" value="accept">
         </form>
         
-        <form action="/rejectSlotRequest?patient=<%=slot.patient.username %>&date=<%=request.date.getTime()%>" method="post">
-            <input type="submit" value="accept">
+        <form action="/rejectSlotRequest?patient=<%=request.patient.username %>&date=<%=request.date.getTime()%>" method="post">
+            <input type="submit" value="reject">
         </form>
         
     </main>

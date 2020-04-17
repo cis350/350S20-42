@@ -42,14 +42,18 @@
         <div class="row">
             <div class="column">
                 <% schedule.forEach( (slot) => { %>
-                    <p><i>Date: </i> <%= slot.toLocaleDateString("en-US") %> <%= slot.toLocaleTimeString("en-US") %></p>
+                    <%if (slot.approved) { %>
+                        <p><i>Hospital: </i> <%= slot.hospital%></p>
+                        <p><i>Patient: </i> <%= slot.patient.username%></p>
+                        <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US") %> <%= slot.date.toLocaleTimeString("en-US") %></p>`
+                    <% }%>
                 <% }); %>
             </div>
             
             <div class="column">
                 <form action="/addNewSlot" method="post">
                     <label for="enterHospital">Enter Hospital: </label> <br>
-                    <select name="enterHosptial">
+                    <select name="enterHospital">
                         <% user.employedAt.forEach( (hospital) => { %>
                             <option value="<%=hospital%>"><%=hospital%></option> 
                         <% }); %>
