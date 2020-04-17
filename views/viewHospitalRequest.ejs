@@ -50,7 +50,7 @@
             <form action="/acceptHospitalRequest?hospital=<%= request.name %>&name=<%= request.creator.username%>" method="post">
                 <input type="submit" class = "btn info" value="Accept Request">
             </form>
-            <form action="/rejectHospitalRequest?hosptial=<%= request.name %>&name=<%=request.creator.username%>" method="post">
+            <form action="/rejectHospitalRequest?hospital=<%= request.name %>&name=<%=request.creator.username%>" method="post">
             <input type="submit" class = "btn reject" value="Reject Request">
             </form>
     </main>

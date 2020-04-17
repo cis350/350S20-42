@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
-            <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -38,7 +36,7 @@
 
         <% if (schedule) {%>
           <% schedule.forEach( (slot) => { %>
-            <% if (slot.patient && !slot.approved) {%> 
+            <% if (slot.patient && !slot.approved) {%>
                 <p><i>Hospital: </i> <%= slot.hospital %></p>
                 <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p>
                 <p><i>Patient: </i> <%=slot.patient.username%></p>

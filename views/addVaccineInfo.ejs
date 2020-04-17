@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
-            <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
         <% if (user.medicalAccount) {%>
             <a class= "active" href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -34,25 +32,25 @@
 
     <main>
         <h1>Hello, respected doctor!</h1>
-        
+
         <h3>This is where you can add information about any vaccine you please, as to update the public about side effects and groundbreaking research.</h3>
-        
+
         <p>Please submit a request to publish general information here: </p>
-        
+
         <p><%= sent %></p>
-        
+
         <form action="/addGeneralVaccineInformation" method="post">
             <label for="enterHospital">Enter the hospital name this post is associated with: </label>
             <br>
             <input type="text" name="enterHospital">
             <br>
-            <label for="enterInformation">Enter information: </label> 
+            <label for="enterInformation">Enter information: </label>
             <br>
             <textarea name="enterInformation" rows = "3" cols = "80"></textarea>
             <br>
             <input type="Submit" value="Send Request">
         </form>
-        
+
     </main>
 
 </body>

@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
-            <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -34,7 +32,7 @@
 
     <main>
         <h1 style='color: darkred;'>Error</h1>
-        
+
         <% if (status == 0) {%>
            <p>Sorry, but the staff member you wanted to add/remove is not a medical account. It must be that an account is approved to be a medical account before they can be added/removed to a hosptial staff.</p>
         <%} else if (status == 1) { %>

@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
-            <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -34,11 +32,11 @@
 
     <main>
         <h1>Add Schedule Openings</h1>
-        
+
         <h3>Here, you, as a doctor, can schedule openings to give vaccines to our other users, who will request to recieve that vaccine from you. </h3>
-        
+
         <%= sent %>
-        
+
         <div class="row">
             <div class="column">
                 <% schedule.forEach( (slot) => { %>
@@ -49,13 +47,13 @@
                     <% }%>
                 <% }); %>
             </div>
-            
+
             <div class="column">
                 <form action="/addNewSlot" method="post">
                     <label for="enterHospital">Enter Hospital: </label> <br>
                     <select name="enterHospital">
                         <% user.employedAt.forEach( (hospital) => { %>
-                            <option value="<%=hospital%>"><%=hospital%></option> 
+                            <option value="<%=hospital%>"><%=hospital%></option>
                         <% }); %>
                     </select> <br>
                     <label for="enterDate">Enter the date and time when this appointment will occur: </label> <br>
@@ -66,8 +64,8 @@
                 </form>
             </div>
         </div>
-        
-        
+
+
     </main>
 
 </body>

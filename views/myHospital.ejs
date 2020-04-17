@@ -6,9 +6,9 @@
 
 <body class="container">
     <div class="topnav">
-        <a class="active" href="/home">Home</a>
+        <a href="/home">Home</a>
         <% if (user.hospitalOwner) {%>
-            <a href="/myHospital">My Hospital</a>
+            <a class="active" href="/myHospital">My Hospital</a>
         <% } %>
         <a href="/myRequests">My Requests</a>
         <% if (!user.medicalAccount) {%>
@@ -34,8 +34,8 @@
 
     <main>
         <h1>My Hospital</h1>
-        
- 
+
+
             <% hospitals.forEach ( (hospital) => { %>
 
                     <p><i>Hospital Name:</i> <%= hospital.name %></p>
@@ -52,7 +52,7 @@
                         <% } %>
                     </p>
 
-            <% }); %> 
+            <% }); %>
 
 
 
@@ -63,7 +63,7 @@
                     <label for="chooseHospital">Choose Hospital: </label> <br>
                     <select name="chooseHospital">
                         <% user.hospitalArray.forEach( (hospital) => { %>
-                            <option value="<%=hospital%>"><%=hospital%></option> 
+                            <option value="<%=hospital%>"><%=hospital%></option>
                         <% }); %>
                     </select> <br>
                     <label for="enterStaffUsernameAdd">Enter Staff Username: </label> <br>
@@ -77,7 +77,7 @@
                     <label for="chooseHospital">Choose Hospital: </label> <br>
                     <select name="chooseHospital">
                         <% user.hospitalArray.forEach( (hospital) => { %>
-                            <option value="<%=hospital%>"><%=hospital%></option> 
+                            <option value="<%=hospital%>"><%=hospital%></option>
                         <% }); %>
                     </select> <br>
                     <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>

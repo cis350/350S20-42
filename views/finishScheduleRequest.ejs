@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
-            <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -36,7 +34,7 @@
         <h1>Schedule Vaccine</h1>
 
         <h3>Please finish this form to request the date to schedule your vaccine.</h3>
-        
+
         <p><i>Hospital: </i> <%= request.hospital %></p>
         <p><i>Doctor: </i> <%= request.doctor.username %></p>
         <p><i>Date: </i> <%= request.date.toLocaleDateString("en-US")%> <%= request.date.toLocaleTimeString("en-US")%></p>
@@ -46,7 +44,7 @@
             <textarea name="enterNote" rows = "3" cols = "80"></textarea> <br>
             <input type="submit">
         </form>
-        
+
     </main>
 
 </body>

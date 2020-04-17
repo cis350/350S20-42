@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
             <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -40,7 +38,7 @@
         <b>Name: </b> <span style="font-family: sans-serif;"><%= user.username %></span><br>
         <b>Is hospital owner? </b><% if (user.hospitalOwner) {%>
         <span style="font-family: sans-serif;">Yes</span>
-        <br>
+            <br>
             <% user.hospitalArray.forEach( (name) => { %>
                  <br><i>Owned Hospital:</i> <%= name %>
                  <br>
@@ -53,15 +51,15 @@
         <%} else {%>
         <span style="font-family: sans-serif;">No</span>
         <%} %>
-        
+
         <!--- forms in case we have to create users again
         <form action="/beHospitalOwner" method="post">
             <input type="Submit" value="hospital">
         </form>
-        
+
         <form action="/beMedicalAccount" method="post">
             <input type="Submit" value="medical">
-        </form> 
+        </form>
         --->
     </main>
 
