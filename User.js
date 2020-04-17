@@ -46,10 +46,12 @@ var generalInfo = new Schema({
 
 var scheduleSlot = new Schema({
     doctor: {type: userSchema, required: true},
+    hospital: {type: String, required: true},
     patient: {type: userSchema},
     date: {type: Date, required: true},
     vaccine: {type: String, required: true},
-    specialNotes: String
+    specialNotes: String,
+    approved: Boolean
 });
 
 module.exports = {userModel: mongoose.model('User', userSchema),

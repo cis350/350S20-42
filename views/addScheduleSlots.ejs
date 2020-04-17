@@ -24,6 +24,11 @@
         <% if (user.medicalAccount) {%>
             <a class="active" href="/addScheduleSlots">Add Schedule Openings</a>
         <% } %>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/listScheduleRequest">Vaccine Request List</a>
+        <% } %>
+        <a href="/mySchedule">My Schedule</a>
         <a href="/logout">Logout</a>
     </div>
 
@@ -37,7 +42,7 @@
         <div class="row">
             <div class="column">
                 <% schedule.forEach( (slot) => { %>
-                    <p><i>Date: </i> <%= slot.toLocaleDate String("en-US") %> <%= slot.toLocaleTimeString("en-US") %></p>
+                    <p><i>Date: </i> <%= slot.toLocaleDateString("en-US") %> <%= slot.toLocaleTimeString("en-US") %></p>
                 <% }); %>
             </div>
             

@@ -4,31 +4,6 @@
     <title>Vaccine App Dashboard</title>
 </head>
 
-<style>
-.btn {
-  background-color: inherit;
-  cursor: pointer;
-  display: inline-block;
-}
-/* Green */
-.info {
-  background-color: black;
-  color: white;
-}
-.info:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-/* Red */
-.reject {
-  color: red;
-}
-.reject:hover {
-  background: #f44336;
-  color: white;
-}
-</style>
-
 <body class="container">
     <div class="topnav">
         <a class="active" href="/home">Home</a>
@@ -49,8 +24,7 @@
         <% if (user.medicalAccount) {%>
             <a href="/addScheduleSlots">Add Schedule Openings</a>
         <% } %>
-        <a href="/viewAvailableSlots">Schedule Vaccine</a>
-        <% if (user.medicalAccount) {%>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a><% if (user.medicalAccount) {%>
             <a href="/listScheduleRequest">Vaccine Request List</a>
         <% } %>
         <a href="/mySchedule">My Schedule</a>
@@ -58,16 +32,20 @@
     </div>
 
     <main>
-        <h1>Submit a Medical Account Request</h1>
-        <p>State your case:</p>
-        <form action="/createMedRequest" id="request" method="post">
-          <textarea name = "input"
-                    rows = "3"
-                    cols = "80"></textarea> <br>
-          <input type="submit" class="btn info" value="Submit">
-        </form>
-        <%= sent %> <br>
+        <h1>Vaccine Scheduling Requests</h1>
 
+        <h3>Here you can accept and reject various requests that users have asked from the slots that you put out.</h3>
+
+        <% if (schedule) {%>
+          <% schedule.forEach( (slot) => { %>
+            <p><i>Hospital: </i> <%= slot.hospital %></p> <br>
+            <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p> <br>
+            <p><i>Patient: </i> <%=slot.patient.username%></p>
+            <br><form action="/viewSlotRequest?patient=<%=slot.patient.username %>&date=<%=request.date.getTime()%>" method="post">
+                    <input type="submit" class="btn info" value="View More">
+                </form>
+          <% }); %>
+          <% } %>
     </main>
 
 </body>
