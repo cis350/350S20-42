@@ -279,7 +279,7 @@ app.use('/addVaccine', (req, res) => {
     var username = req.query.username;
     var password = req.query.password;
     var vId = req.query.vId;
-    var vDate = Date.parse(req.query.date);
+    var vDate = new Date(Date.parse(req.query.vDate));
     var hospitalId = req.query.hId;
     var newVaccine = new PersonVaccine ({
         id: vId,
