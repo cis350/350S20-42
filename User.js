@@ -9,6 +9,12 @@ mongoose.connect('mongodb://localhost:27017/database');
 
 var Schema = mongoose.Schema;
 
+var vaccineSchema = new Schema({
+  id: String,
+  name: String,
+  info: String
+});
+
 var personVaccineSchema = new Schema({
 	id: String,
 	date: {type: Date, default: Date.now},
@@ -19,14 +25,17 @@ var personVaccineSchema = new Schema({
 var userSchema = new Schema({
   username: {type: String, required: true},
   password: {type: String, required: true},
+  hospitalOwner: Boolean,
+  hospitalArray: [String],
+  employedAt: [String],
+  medicalAccount: Boolean,
+  sentMedicalRequest: Boolean,
   fullName: String,
   img: {data: Buffer, contentType:String},
   vaccines: [personVaccineSchema],
-  hospitalOwner: Boolean,
-	hospitalArray: [String],
-	employedAt: [String],
-  medicalAccount: Boolean,
-  sentMedicalRequest: Boolean
+  email: String,
+  blood: String,
+  dob: Date
 });
 
 var medRequestSchema = new Schema({
@@ -74,4 +83,5 @@ hosRequestModel: mongoose.model('HospitalRequest', hosRequestSchema),
 hosModel: mongoose.model('Hospital', hosSchema),
 personVaccineSchema: mongoose.model('PersonVaccine', personVaccineSchema),
 generalInfoModel: mongoose.model('GeneralInformation', generalInfo),
-scheduleSlotModel: mongoose.model('ScheduleSlot', scheduleSlot)};
+scheduleSlotModel: mongoose.model('ScheduleSlot', scheduleSlot),
+vaccineModel: mongoose.model('VaccineInfo', vaccineSchema)};
