@@ -159,19 +159,60 @@ app.use('/procedures', (req, res) => {
       } else if (allSlots.length == 0) {
           res.json( { 'status' : 'no openings' } );
       } else {
+          var listings = []
           if (hospital) {
-              var listings = []
               allSlots.forEach( (listing) => {
-                  if (listing.hospital == hospital) {
+                  if (listing.hospital == hospital && !listing.patient) {
                       listings.push(listing);
                   }
               });
               res.json(listings);
           } else {
-              res.json(allSlots);
+              allSlots.forEach( (listing) => {
+                  if (!listing.patient) {
+                      listings.push(listing);
+                  }
+              });
+              res.json(listings);
           }
       }
   });
+});
+
+app.use('/requestProcedure', (req, res) => {
+    console.log("Attempting");
+    var username = req.query.username;
+    var note = req.query.note;
+    var hospital = req.query.hospital;
+    var procedure = req.query.procedure;
+    Person.findOne( {username: username}, (err, user) => {
+        if (err) {
+            console.log(err);
+            res.end();
+        } else if (user) {
+            console.log(user);
+            console.log("hospital: " + hospital + " procedure: " + procedure);
+            console.log(note);
+            ScheduleSlot.findOne( {hospital : hospital, vaccine : procedure}, (err, slot) => {
+                if (err) {
+                    res.json( { 'status' : err } );
+                } else if (!slot) {
+                    res.json( { 'status' : 'no openings' } );
+                } else {
+                    // Slot will gain the patient and special notes
+                    slot.patient = user;
+                    slot.specialNotes = note;
+                    slot.save( (err) => {
+                        if (err) {
+                            res.json({'status' : err});
+                        } else {
+                            res.json({'status' : "success"});
+                        }
+                    });
+                }
+            });
+        }
+    });
 });
 
 app.use('/updatePassword', (req, res) => {
