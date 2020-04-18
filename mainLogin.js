@@ -131,7 +131,6 @@ app.get('/medicalrequest', function (req, res) {
     if (!currentUser) {
         res.redirect('/public/login.html');
     }
-
     res.render('upgradeRequest', {user: currentUser, sent: ""});
 });
 
@@ -183,6 +182,7 @@ app.use('/createHosRequest', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+
   if (req.body.hospital && req.body.place) {
       var newRequest = new HospitalRequest({
         creator: currentUser,
@@ -221,6 +221,7 @@ app.get('/adminhome', function (req, res) {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+
   if (currentUser.username == 'administrator') {
       res.render('adminDashboard', {user: currentUser});
   } else {
@@ -233,6 +234,7 @@ app.get('/accountchange', function (req, res) {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+
   if (currentUser.username == 'administrator') {
       MedicalRequest.find( (err, allRequests) => {
           if (err) {
@@ -251,9 +253,11 @@ app.get('/accountchange', function (req, res) {
 
 // Page for viewing hospital requests
 app.get('/hospitalcreation', function (req, res) {
+
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+  
   if (currentUser.username == 'administrator') {
       HospitalRequest.find( (err, allRequests) => {
           if (err) {
@@ -275,6 +279,7 @@ app.use('/viewAccountRequest', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+  
   if (currentUser.username == 'administrator' && req.query.name) {
     var name = req.query.name;
 
@@ -301,6 +306,7 @@ app.use('/acceptAccountRequest', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+
   if (currentUser.username == 'administrator' && req.query.name) {
       var name = req.query.name;
 
@@ -344,6 +350,7 @@ app.use('/rejectAccountRequest', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
+
   if (currentUser.username == 'administrator' && req.query.name) {
       var name = req.query.name;
 
@@ -491,6 +498,7 @@ app.use('/rejectHospitalRequest', (req, res) => {
     }
 
     console.log(req.query.hospital);
+
   if (currentUser.username == 'administrator' && req.query.hospital) {
       var name = req.query.hospital;
 
@@ -514,7 +522,7 @@ app.use('/hospitallist', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
-
+  
   if (currentUser.username == 'administrator') {
       var name = req.query.name;
 
@@ -1139,6 +1147,15 @@ app.use('/', (req, res) => {
    } else {
        res.redirect('/public/login.html');
    }
+
+});
+
+app.use('/', (req, res) => {
+  if (currentUser) {
+      res.render('differentDashboard', {user: currentUser});
+  } else {
+      res.redirect('/public/login.html');
+  }
 });
 
 app.listen(3000, () => {

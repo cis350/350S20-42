@@ -29,6 +29,7 @@
             <a href="/listScheduleRequest">Vaccine Request List</a>
         <% } %>
         <a href="/mySchedule">My Schedule</a>
+
         <a href="/logout">Logout</a>
     </div>
 
@@ -65,11 +66,13 @@
                         <% user.hospitalArray.forEach( (hospital) => { %>
                             <option value="<%=hospital%>"><%=hospital%></option>
                         <% }); %>
+
                     </select> <br>
                     <label for="enterStaffUsernameAdd">Enter Staff Username: </label> <br>
                     <input type="text" name="enterStaffUsernameAdd"> <br>
                     <input type="Submit" value="Add Staff">
                 </form>
+
             </div>
             <div class="column">
                 <p> Remove Staff: </p>
