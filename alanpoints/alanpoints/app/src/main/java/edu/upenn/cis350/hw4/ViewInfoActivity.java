@@ -40,6 +40,18 @@ public class ViewInfoActivity extends AppCompatActivity {
         if (data.getUsername().length() != 0) {
             usernameText.setText(data.getUsername());
         }
+
+        if (data.getFullName().length() != 0) {
+            fullNameText.setText(data.getFullName());
+        }
+
+        if (data.getBlood().length() != 0) {
+            bloodText.setText(data.getBlood());
+        }
+
+        if (data.getEmail().length() != 0) {
+            emailText.setText(data.getEmail());
+        }
     }
 
     void addClick(View v){
@@ -56,9 +68,9 @@ public class ViewInfoActivity extends AppCompatActivity {
             urls[0] = new URL("http://10.0.2.2:3000/editInfo?username=" + username +
                     "&password=" + password + "&fullName=" + fullName + "&email=" + email +
                     "&blood=" + blood + "&dob=" + dob);
-            AccessWebTask task = new AccessWebTask();
-            task.execute();
-            data = task.get()[0];
+            AccessWebAddVaccine task = new AccessWebAddVaccine();
+            task.execute(urls);
+            task.get();
         } catch (Exception e){
             throw new UnsupportedOperationException();
         }

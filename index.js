@@ -105,6 +105,7 @@ var Person = schemas.userModel;
 var PersonVaccine = schemas.personVaccineSchema;
 var Hospital = schemas.hosModel;
 var ScheduleSlot = schemas.scheduleSlotModel;
+var VaccineInfo = schemas.vaccineModel;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -215,17 +216,26 @@ app.use('/requestProcedure', (req, res) => {
     });
 });
 
-app.use('/updatePassword', (req, res) => {
-    var updateName = req.query.username;
-    var oldPassword = req.query.oldPassword;
-    Person.findOne( { username: updateName, password : oldPassword }, (err, person) => {
+app.use('/editInfo', (req, res) => {
+    var username = req.query.username;
+    var password = req.query.password;
+    var email = req.query.email;
+    var fullName = req.query.fullName;
+    var blood = req.query.blood;
+    var dob = new Date(Date.parse(req.query.dob));
+    Person.findOne( {
+     username: username,
+      password : password }, (err, person) => {
         if (err) {
             res.json( { 'status' : err } );
         }
         else if (!person) {
            res.json( { 'status' : 'no person' } );
        } else {
-        person.password = req.query.newPassword;
+        person.fullName = fullName;
+        person.email = email;
+        person.blood = blood;
+        person.dob = dob;
         person.save( (err) => {
           if (err) {
               res.json( { 'status' : err } );
@@ -305,3 +315,33 @@ app.use('/addVaccine', (req, res) => {
        }
    });
 });
+
+app.use('/addVaccineInfo', (req, res) => {
+var newVaccine = new VaccineInfo ({
+ // defined in Person.js
+ id: req.query.id,
+ name: req.query.name,
+ info: req.query.info
+});
+
+newVaccine.save( (err) => {
+         if (err) {
+          res.json( { 'status' : err } );
+         } else {
+          res.json( { 'status' :'success' } );
+         }
+    });
+});
+
+app.use('/allVaccineInfo', (req, res) => {
+    VaccineInfo.find( (err, vaccines) => {
+        if (err) {
+          res.json( { 'status' : err } );
+        } else if (vaccines.length == 0) {
+           res.json( { 'status' : 'no people' } );
+        } else {
+           res.json({'status': 'success', 'vaccines' : vaccines} );
+        }
+    });
+});
+

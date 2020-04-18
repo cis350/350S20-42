@@ -10,24 +10,16 @@ public class Vaccine implements Serializable {
     Date date;
     String hospitalId;
     Boolean verified;
+    public final static int idLength = 4;
 
     public Vaccine(String id, String date, String hospitalId, Boolean verified) {
         this.id = id;
-        this.date = DateConvert(date);
+        this.date = DataTasks.DateConvert(date);
         this.hospitalId = hospitalId;
         this.verified = verified;
     }
 
-    private Date DateConvert(String str) {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            Date date = formatter.parse(str.replaceAll("Z$", "+0000"));
-            return date;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new UnsupportedOperationException();
-        }
-    }
+
 
 
     public String toString() {

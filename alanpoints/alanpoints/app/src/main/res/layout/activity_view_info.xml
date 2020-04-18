@@ -128,51 +128,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Username"
-                android:textSize="30dp" />
-
-            <EditText
-                android:id="@+id/userndameText"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="NotSet"
-                android:textSize="30dp" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Username"
-                android:textSize="30dp" />
-
-            <EditText
-                android:id="@+id/usernadmeText"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="NotSet"
-                android:textSize="30dp" />
-
-        </LinearLayout>
-
 
 
 

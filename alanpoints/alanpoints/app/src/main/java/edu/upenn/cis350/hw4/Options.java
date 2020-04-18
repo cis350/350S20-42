@@ -58,6 +58,14 @@ public class Options extends AppCompatActivity {
 
     }
 
+    public void viewVaccinesInfoClick(View v) {
+        System.out.println("nn");
+        Intent i = new Intent(this, AllVaccinesActivity.class);
+        i.putExtra("data", data);
+        startActivity(i);
+
+    }
+
     public void addImageClick(View v) {
         System.out.println("nn");
         Intent i = new Intent(this, AddOneVaccine.class);
@@ -65,6 +73,16 @@ public class Options extends AppCompatActivity {
         startActivity(i);
 
     }
+
+    public void changeInfoClick(View v) {
+        System.out.println("nn");
+        Intent i = new Intent(this, ViewInfoActivity.class);
+        i.putExtra("data", data);
+        startActivity(i);
+
+    }
+
+
 
     public void appointmentClick(View v) {
         System.out.println("HEHEHE");

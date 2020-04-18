@@ -1,6 +1,8 @@
 package edu.upenn.cis350.hw4.data;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DataTasks {
     public static void createLogin(String username, String password, String name) {
@@ -93,6 +95,30 @@ public class DataTasks {
         }
         catch (Exception e) {
             throw new IllegalStateException();
+        }
+    }
+
+    public static VaccineInfo[] getVaccineInfo() {
+        try {
+            VaccineInfoWebTask task = new VaccineInfoWebTask();
+            task.execute(new String[0]);
+            VaccineInfo[] result = task.get();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    public static Date DateConvert(String str) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            Date date = formatter.parse(str.replaceAll("Z$", "+0000"));
+            return date;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new UnsupportedOperationException();
         }
     }
 }

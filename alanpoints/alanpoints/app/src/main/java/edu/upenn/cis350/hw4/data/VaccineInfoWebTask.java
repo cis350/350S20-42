@@ -13,21 +13,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
-public class AccessWebTask extends AsyncTask<String, String, Person[]> {
+public class VaccineInfoWebTask extends AsyncTask<String, String, VaccineInfo[]> {
     /*This method is called in background when this object's "execute" method is invoked.The arguments passed to "execute" are passed to this method.*/
-    protected Person[] doInBackground(String... strArr) {
+    protected VaccineInfo[] doInBackground(String... strArr) {
         try {
             // get the first URL from the array
-            URL url = new URL("http://10.0.2.2:3000/loginPerson?username=" + strArr[0]+
-                    "&password="+strArr[1]);
+            URL url = new URL("http://10.0.2.2:3000/allVaccineInfo");
             System.out.println(url);
-            Person[] people = new Person[1];
-            // create connection and send HTTP request
-            System.out.println('b');
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             System.out.println('a');
             conn.setRequestMethod("GET");
-
+            VaccineInfo[] vaccines = null;
             // open connection and send HTTP request
             System.out.println('d');
             conn.connect();
@@ -56,39 +52,22 @@ public class AccessWebTask extends AsyncTask<String, String, Person[]> {
                         return null;
                     }
                     System.out.println(1);
-                    JSONObject data = (JSONObject) result.get("person");
-                    //JSONObject data = (JSONObject) dataT.get(0);
-                    System.out.println(data);
-                    // read the "message" field from the JSON object
-                    String user = (String) data.get("username");
-                    System.out.println(user);
-                    String pass = (String) data.get("password");
-                    System.out.println(pass);
-                    JSONArray vac = (JSONArray) data.get("vaccines");
-                    Vaccine[] vaccines = new Vaccine[vac.size()];
+
+                    JSONArray vac = (JSONArray) result.get("vaccines");
+                    vaccines = new VaccineInfo[vac.size()];
                     for (int i = 0; i < vac.size(); i++) {
                         String id = (String)((JSONObject)vac.get(i)).get("id");
-                        String date = (String)((JSONObject)vac.get(i)).get("date");
-                        String hospitalId = (String)((JSONObject)vac.get(i)).get("hospitalId");
-                        Boolean verified = (Boolean) ((JSONObject)vac.get(i)).get("verified");
-                        vaccines[i] = new Vaccine(id, date, hospitalId, verified);
+                        String name = (String)((JSONObject)vac.get(i)).get("name");
+                        String info = (String)((JSONObject)vac.get(i)).get("info");
+                        vaccines[i] = new VaccineInfo(id, name, info);
                     }
-                    Person p = new Person(user, pass);
-                    p.setVaccines(vaccines);
-                    p.setFullName((String)data.get("fullName"));
-                    p.setEmail((String)data.get("email"));
-                    p.setBlood((String)data.get("blood"));
-                    p.setDob((String)data.get("dob"));
-
-                    //p.setFullName((String) data.get("fullName"));
-                    people[0]=(p);
 
                 }
                 // if using the provided Node Express starter code,
                 // this should print "It works!"
 
             }
-            return people;
+            return vaccines;
         } catch (IOException e) {
             throw new IllegalStateException();
         } catch (Exception e) {
@@ -97,7 +76,6 @@ public class AccessWebTask extends AsyncTask<String, String, Person[]> {
         }
 
     }
-
 
 
     /*This method is called in foreground after doInBackground finishes.It can access and update Views in user interface.*/

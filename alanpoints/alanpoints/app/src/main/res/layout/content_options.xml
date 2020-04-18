@@ -28,7 +28,7 @@
             android:id="@+id/viewVaccinesButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View Vaccines"
+            android:text="View Your Vaccines"
             android:onClick="viewVaccinesClick"
             android:textSize="24sp" />
 
@@ -46,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Change Information"
+            android:onClick="changeInfoClick"
             android:textSize="24sp" />
 
         <Button
@@ -54,6 +55,14 @@
             android:layout_height="wrap_content"
             android:text="Make a Vaccine appointment"
             android:onClick="appointmentClick"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/viewVaccinesInfoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Info about Vaccines"
+            android:onClick="viewVaccinesInfoClick"
             android:textSize="24sp" />
 
         <Button

@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AllVaccinesActivity"></activity>
+        <activity android:name=".VaccineInfoActivity"></activity>
+        <activity android:name=".AllVaccinesActivity" />
         <activity android:name=".AppSearchActivity" />
         <activity android:name=".AppSearchAllActivity" />
         <activity android:name=".AppSearchSomeActivity" />
