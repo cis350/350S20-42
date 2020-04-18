@@ -4,31 +4,6 @@
     <title>Vaccine App Dashboard</title>
 </head>
 
-<style>
-.btn {
-  background-color: inherit;
-  cursor: pointer;
-  display: inline-block;
-}
-/* Green */
-.info {
-  background-color: black;
-  color: white;
-}
-.info:hover {
-  background-color: #4CAF50;
-  color: white;
-}
-/* Red */
-.reject {
-  color: red;
-}
-.reject:hover {
-  background: #f44336;
-  color: white;
-}
-</style>
-
 <body class="container">
     <div class="topnav">
         <a href="/home">Home</a>
@@ -36,7 +11,9 @@
             <a href="/myHospital">My Hospital</a>
         <% } %>
         <a href="/myRequests">My Requests</a>
-        <a class="active" href="/medicalRequest">Medical Upgrade</a>
+        <% if (!user.medicalAccount) {%>
+            <a href="/medicalRequest">Medical Upgrade</a>
+        <% } %>
         <a href="/hospitalRequest">Hospital Creation</a>
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
@@ -45,25 +22,28 @@
         <% if (user.medicalAccount) {%>
             <a href="/addScheduleSlots">Add Schedule Openings</a>
         <% } %>
-        <a href="/viewAvailableSlots">Schedule Vaccine</a>
+        <a class="active" href="/viewAvailableSlots">Schedule Vaccine</a>
         <% if (user.medicalAccount) {%>
             <a href="/listScheduleRequest">Vaccine Request List</a>
         <% } %>
         <a href="/mySchedule">My Schedule</a>
-
         <a href="/logout">Logout</a>
     </div>
 
     <main>
-        <h1>Submit a Medical Account Request</h1>
-        <p>State your case:</p>
-        <form action="/createMedRequest" id="request" method="post">
-          <textarea name = "input"
-                    rows = "3"
-                    cols = "80"></textarea> <br>
-          <input type="submit" class="btn info" value="Submit">
+        <h1>Schedule Vaccine</h1>
+
+        <h3>Please finish this form to request the date to schedule your vaccine.</h3>
+
+        <p><i>Hospital: </i> <%= request.hospital %></p>
+        <p><i>Doctor: </i> <%= request.doctor.username %></p>
+        <p><i>Date: </i> <%= request.date.toLocaleDateString("en-US")%> <%= request.date.toLocaleTimeString("en-US")%></p>
+        <p><i>Vaccine: </i> <%= request.vaccine %></p>
+        <form action='/processScheduleRequest?doctor=<%=request.doctor.username%>&date=<%=request.date.getTime()%>' method='post'>
+            <label for="enterNote">Enter a note for the doctor: </label> <br>
+            <textarea name="enterNote" rows = "3" cols = "80"></textarea> <br>
+            <input type="submit">
         </form>
-        <%= sent %> <br>
 
     </main>
 

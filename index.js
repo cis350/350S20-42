@@ -55,7 +55,7 @@ function getPerson(id){
         var person = people.get(id);
         var personJson = ({'id' : id, 'status' : person.status,
            'date' : person.date});
-        return personJson;    
+        return personJson;
     }
 }
 
@@ -82,13 +82,12 @@ app.use('/a', (req, res) => {
     res.send('Default message.');
 });
 
-// This starts the web server on port 3000. 
+// This starts the web server on port 3000.
 app.listen(3000, () => {
     console.log('Listening on port 3000');
 });
 
-/////
-
+/*
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
 
@@ -98,11 +97,13 @@ client.connect(err => {
   // perform actions on the collection object
   client.close();
 });
+*/
 
 
-var schemas = require('./Person.js');
-var Person = schemas.personSchema;
+var schemas = require('./User.js');
+var Person = schemas.userModel;
 var PersonVaccine = schemas.personVaccineSchema;
+var Hospital = schemas.hosModel;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -110,68 +111,104 @@ var newPerson = new Person ({
  username: req.query.username,
  password: req.query.password,
 });
+
 newPerson.save( (err) => {
          if (err) {
-          res.json( { 'status' : err } );         }
-             else {
-                   res.json( { 'status' :'success' } );   } });});
+          res.json( { 'status' : err } );
+         } else {
+          res.json( { 'status' :'success' } );
+         }
+    });
+});
 
 app.use('/all', (req, res) => {
     Person.find( (err, allPeople) => {
-        if (err) {   res.json( { 'status' : err } );}
-        else if (allPeople.length == 0) {
-           res.json( { 'status' : 'no people' } );}
-           else {
-              res.json(allPeople );}});});
+        if (err) {
+          res.json( { 'status' : err } );
+        } else if (allPeople.length == 0) {
+           res.json( { 'status' : 'no people' } );
+        } else {
+           res.json(allPeople );
+        }
+    });
+});
+
+app.use('/hospitals', (req, res) => {
+    Hospital.find( (err, allHospitals) => {
+      if (err) {
+        res.json( { 'status' : err } );
+      } else if (allHospitals.length == 0) {
+         res.json( { 'status' : 'no hospitals' } );
+      } else {
+         var hosNames = []
+         allHospitals.forEach( (hospital) => {
+             hosNames.push(hospital.name);
+         });
+         res.json(hosNames);
+      }
+    });
+});
 
 
 app.use('/updatePassword', (req, res) => {
     var updateName = req.query.username;
     var oldPassword = req.query.oldPassword;
-    Person.findOne(
-     { username: updateName, password : oldPassword },
-      (err, person) => {
+    Person.findOne( { username: updateName, password : oldPassword }, (err, person) => {
         if (err) {
             res.json( { 'status' : err } );
         }
         else if (!person) {
            res.json( { 'status' : 'no person' } );
-       }else {
+       } else {
         person.password = req.query.newPassword;
         person.save( (err) => {
-         if (err) {    res.json( { 'status' : err } );
-        }else {
-           res.json( { 'status' : 'success' } );}});}});});
+          if (err) {
+              res.json( { 'status' : err } );
+          } else {
+               res.json( { 'status' : 'success' } );
+          }
+        });
+      }
+    });
+  });
 
 
 app.use('/loginPerson', (req, res) => {
     var searchName = req.query.username;
     var searchPassword = req.query.password;
-    Person.findOne( { username: searchName, password: searchPassword }, 
-        (err, person) => {
-        if (err) {    
+    Person.findOne( { username: searchName, password: searchPassword }, (err, person) => {
+        if (err) {
             res.json( { 'status' : err } );
-        }else if (!person) {   res.json( { 'status' : 'no person' } );
-    }else { 
-       res.json( { 'status' : 'success'  ,'person' : person } );}});});
+        } else if (!person) {
+          res.json( { 'status' : 'no person' } );
+        } else {
+          res.json( { 'status' : 'success'  ,'person' : person } );
+        }
+    });
+});
 
 app.use('/addImage', (req, res) => {
     var username = req.query.username;
     var password = req.query.password;
     var imgPath = req.query.imgPath;
-    Person.findOne( { username: username, password: password }, 
-        (err, person) => {
-        if (err) {    
+    Person.findOne( { username: username, password: password }, (err, person) => {
+        if (err) {
             res.json( { 'status' : err } );
-        }else if (!person) {   res.json( { 'status' : 'no person' } );
-    }else { 
-       person.img.data = fs.readFileSync(imgPath);
-       person.img.contentType = 'image/png';
-       person.save( (err) => {
-         if (err) {    res.json( { 'status' : err } );
-        }else {
-           res.json( { 'status' : 'success' } );}});
-       }});});
+        } else if (!person) {
+            res.json( { 'status' : 'no person' } );
+        } else {
+            person.img.data = fs.readFileSync(imgPath);
+            person.img.contentType = 'image/png';
+            person.save( (err) => {
+            if (err) {
+              res.json( { 'status' : err } );
+            } else {
+              res.json( { 'status' : 'success' } );
+            }
+          });
+       }
+   });
+});
 
 app.use('/addVaccine', (req, res) => {
     var username = req.query.username;
@@ -181,21 +218,25 @@ app.use('/addVaccine', (req, res) => {
     var hospitalId = req.query.hId;
     var newVaccine = new PersonVaccine ({
         id: vId,
-    date: vDate,
-    hospitalId: hospitalId,
-    verified: false
+        date: vDate,
+        hospitalId: hospitalId,
+        verified: false
     });
-    Person.findOne( { username: username, password: password }, 
-        (err, person) => {
-        if (err) {    
-            res.json( { 'status' : err } );
-        }else if (!person) {   res.json( { 'status' : 'no person' } );
-    }else { 
-       person.vaccines.push(newVaccine);
 
-       person.save( (err) => {
-         if (err) {    res.json( { 'status' : err } );
-        }else {
-           res.json( { 'status' : 'success' } );}});
-       }});});
-
+    Person.findOne( { username: username, password: password }, (err, person) => {
+        if (err) {
+           res.json( { 'status' : err } );
+        } else if (!person) {
+           res.json( { 'status' : 'no person' } );
+        } else {
+           person.vaccines.push(newVaccine);
+           person.save( (err) => {
+             if (err) {
+               res.json( { 'status' : err } );
+             } else {
+               res.json( { 'status' : 'success' } );
+             }
+         });
+       }
+   });
+});

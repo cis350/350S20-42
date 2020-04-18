@@ -32,10 +32,27 @@
 <body class="container">
     <div class="topnav">
         <a href="/home">Home</a>
-        <a href="/myHospital">My Hospital</a>
+        <% if (user.hospitalOwner) {%>
+            <a href="/myHospital">My Hospital</a>
+        <% } %>
         <a href="/myRequests">My Requests</a>
-        <a href="/medicalrequest">Medical Upgrade</a>
-        <a class="active" href="/hospitalrequest">Hospital Creation</a>
+        <% if (!user.medicalAccount) {%>
+            <a href="/medicalRequest">Medical Upgrade</a>
+        <% } %>
+        <a class="active" href="/hospitalRequest">Hospital Creation</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addVaccineInfo">Add Vaccine Information</a>
+        <% } %>
+        <a href="/generalInformation">General Vaccine Information</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addScheduleSlots">Add Schedule Openings</a>
+        <% } %>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/listScheduleRequest">Vaccine Request List</a>
+        <% } %>
+        <a href="/mySchedule">My Schedule</a>
+
         <a href="/logout">Logout</a>
     </div>
 

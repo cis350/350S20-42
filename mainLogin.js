@@ -13,6 +13,8 @@ var User = schemas.userModel;
 var MedicalRequest = schemas.medRequestModel;
 var HospitalRequest = schemas.hosRequestModel;
 var Hospital = schemas.hosModel;
+var GeneralInformation = schemas.generalInfoModel;
+var ScheduleSlot = schemas.scheduleSlotModel;
 
 var currentUser = null;
 
@@ -117,30 +119,29 @@ app.use('/checkLogin', (req, res) => {
 });
 
 app.get('/home', function (req, res) {
-  if (!currentUser) {
-      res.redirect('/public/login.html');
-  }
+    if (!currentUser) {
+        res.redirect('/public/login.html');
+    }
 
-  res.render('differentDashboard', {user: currentUser});
+    res.render('differentDashboard', {user: currentUser});
 });
 
 // Start of creating medical request functionality
 app.get('/medicalrequest', function (req, res) {
-  if (!currentUser) {
-      res.redirect('/public/login.html');
-  }
-
-  res.render('upgradeRequest', {user: currentUser, sent: ""});
+    if (!currentUser) {
+        res.redirect('/public/login.html');
+    }
+    res.render('upgradeRequest', {user: currentUser, sent: ""});
 });
 
-
 app.use('/createMedRequest', (req, res) => {
-
   if (!currentUser) {
       res.redirect('/public/login.html');
-  }
-
-  if (req.body.input && !currentUser.medicalAccount && !currentUser.sentMedicalRequest) {
+  } else if (currentUser.medicalAccount) {
+      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " is already certified!"});
+  } else if (currentUser.sentMedicalRequest) {
+      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " already has a pending request!"});
+  } else if (req.body.input) {
       var newRequest = new MedicalRequest({
         creator: currentUser,
         description: req.body.input,
@@ -158,17 +159,13 @@ app.use('/createMedRequest', (req, res) => {
       currentUser.sentMedicalRequest = true;
       currentUser.save( (err) => {
           if (err) {
-              res.json({'status' : err});
+              res.json({'status': err});
           } else {
-              res.render('differentDashboard', {user: currentUser});
+              console.log('logged the request');
           }
       });
 
       res.render('upgradeRequest', {user: currentUser, sent: currentUser.username + " sent the following: " + req.body.input});
-  } else if (req.body.input && currentUser.medicalAccount) {
-      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " is already certified!"});
-  } else if (req.body.input && currentUser.sentMedicalRequest) {
-      res.render('upgradeRequest', {user: currentUser, sent: "ERROR: " + currentUser.username + " already has a pending request!"});
   } else {
       res.render('upgradeRequest', {user: currentUser, sent: "Not Sent"});
   }
@@ -182,9 +179,9 @@ app.get('/hospitalrequest', function (req, res) {
 });
 
 app.use('/createHosRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
   if (req.body.hospital && req.body.place) {
       var newRequest = new HospitalRequest({
@@ -211,7 +208,6 @@ app.use('/createHosRequest', (req, res) => {
               console.log('logged the request');
           }
       });
-
       res.render('hospitalRequest', {user: currentUser, sent: currentUser.username + " sent the following for: " + req.body.hospital});
   } else {
       res.render('hospitalRequest', {user: currentUser, sent: "Not Sent"});
@@ -222,9 +218,9 @@ app.use('/createHosRequest', (req, res) => {
 
 // Start of admin actions
 app.get('/adminhome', function (req, res) {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
   if (currentUser.username == 'administrator') {
       res.render('adminDashboard', {user: currentUser});
@@ -235,9 +231,9 @@ app.get('/adminhome', function (req, res) {
 
 // Page for viewing medical requests
 app.get('/accountchange', function (req, res) {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
   if (currentUser.username == 'administrator') {
       MedicalRequest.find( (err, allRequests) => {
@@ -257,10 +253,11 @@ app.get('/accountchange', function (req, res) {
 
 // Page for viewing hospital requests
 app.get('/hospitalcreation', function (req, res) {
-  if (!currentUser) {
-      res.redirect('/public/login.html');
-  }
 
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }
+  
   if (currentUser.username == 'administrator') {
       HospitalRequest.find( (err, allRequests) => {
           if (err) {
@@ -279,10 +276,10 @@ app.get('/hospitalcreation', function (req, res) {
 
 // Page for viewing specific medical request
 app.use('/viewAccountRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
-
+    }
+  
   if (currentUser.username == 'administrator' && req.query.name) {
     var name = req.query.name;
 
@@ -293,7 +290,7 @@ app.use('/viewAccountRequest', (req, res) => {
         } else {
             allRequests.forEach( (request) => {
                 if (request.creator.username == name) {
-                    res.render('viewAccountRequest', {request: request});
+                    res.render('viewAccountRequest', {user: currentUser, request: request});
                 }
             });
         }
@@ -306,9 +303,9 @@ app.use('/viewAccountRequest', (req, res) => {
 
 // Page for accepting specific medical request
 app.use('/acceptAccountRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
   if (currentUser.username == 'administrator' && req.query.name) {
       var name = req.query.name;
@@ -350,9 +347,9 @@ app.use('/acceptAccountRequest', (req, res) => {
 
 // Page for rejecting specific medical request
 app.use('/rejectAccountRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
   if (currentUser.username == 'administrator' && req.query.name) {
       var name = req.query.name;
@@ -374,11 +371,11 @@ app.use('/rejectAccountRequest', (req, res) => {
           if (err) {
               console.log(err);
               res.end();
-          } else if (user) {
+          } else {
               user.sentMedicalRequest = false;
               user.save( (err) => {
                   if (err) {
-                      res.json({'status' : err});
+                      res.json({'status': err});
                   }
               });
           }
@@ -393,95 +390,97 @@ app.use('/rejectAccountRequest', (req, res) => {
 
 // Page for viewing specific hospital request
 app.use('/viewHospitalRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
-  if (currentUser.username == 'administrator' && req.query.name) {
-    var name = req.query.name;
+    if (currentUser.username == 'administrator' && req.query.name) {
+      var name = req.query.name;
 
-    HospitalRequest.findOne( {name: name}, (err, request) => {
-        if (err) {
-            console.log(err);
-            res.end();
-        } else {
-            res.render('viewHospitalRequest', {request: request});
-        }
-    });
-  } else {
+      HospitalRequest.findOne( {name: name}, (err, request) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              res.render('viewHospitalRequest', {user: currentUser, request: request});
+          }
+      });
+    } else {
       res.render('differentDashboard', {user: currentUser});
-  }
-
+    }
 });
 
 // Page for accepting specific hospital request
 app.use('/acceptHospitalRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
 
   if (currentUser.username == 'administrator' && req.query.name && req.query.hospital) {
       var name = req.query.hospital;
       var username = req.query.name;
 
-      // Checks if a hospital of the same name already exists
       Hospital.findOne( {name: name}, (err, hospital) => {
           if (err) {
               console.log(err);
               res.end();
           } else if (!hospital) {
-            // If hospital of same name does not exist, then create it
-            HospitalRequest.findOne( {name: name}, (err, request) => {
-                if (err) {
-                    console.log(err);
-                    res.end();
-                } else {
+              //If hospital name does not exist, then create it
+              HospitalRequest.findOne( {name: name}, (err, request) => {
+                  if (err) {
+                      console.log(err);
+                      res.end();
+                  } else {
+                      console.log("CREATOR: " + request.creator.username);
 
-                  console.log("CREATOR: " + request.creator);
+                      var newHospital = new Hospital({
+                          owner: request.creator,
+                          name: request.name,
+                          location: request.location,
+                          website: request.website
+                      });
 
-                  var newHospital = new Hospital({
-                    owner: request.creator,
-                    name: request.name,
-                    location: request.location,
-                    website: request.website,
-                  });
+                      console.log(newHospital);
 
-                  newHospital.save( (err) => {
+                      newHospital.save( (err) => {
+                         if (err) {
+                             console.log("HOSPITAL SAVE THROWN");
+                             res.json({'status': err});
+                         } else {
+                             console.log("Hospital made");
+                         }
+                      });
+
+                      request.remove();
+                  }
+                  //Set user account to hospital owner
+                  User.findOne( {username: username}, (err, user) => {
                       if (err) {
-                          console.log("HOSPITAL SAVE THROWN");
-                          res.json({'status' : err});
+                          console.log(err);
+                          res.end();
+                      } else if (user) {
+                          user.hospitalOwner = true;
+                          user.hospitalArray.push(name);
+                          user.save( (err) => {
+                             if (err) {
+                                 res.json({'status': err});
+                             }
+                          });
                       }
                   });
+              });
 
-                  request.remove();
-                }
-            });
-
-            // Set user account to hospital owner
-            User.findOne( {username: username}, (err, user) => {
-                if (err) {
-                    console.log(err);
-                    res.end();
-                } else if (user) {
-                    user.hospitalOwner = true;
-                    user.hospitalArray.push(name);
-                    user.save( (err) => {
-                        if (err) {
-                            res.json({'status' : err});
-                        }
-                    });
-                }
-            });
           } else {
-            // If hospital of same name exists, delete request
-            HospitalRequest.findOne( {name: name}, (err, request) => {
-                if (err) {
-                    console.log(err);
-                    res.end();
-                } else {
-                    request.remove();
-                }
-            });
+              //If hospital of same name exists, delete request
+              HospitalRequest.findOne( {name: name}, (err, request) => {
+                  if (err) {
+                      console.log(err);
+                      res.end();
+                  } else {
+                      request.remove();
+                  }
+              });
+
           }
       });
 
@@ -494,9 +493,11 @@ app.use('/acceptHospitalRequest', (req, res) => {
 
 // Page for rejecting specific hospital request
 app.use('/rejectHospitalRequest', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
+    }
+
+    console.log(req.query.hospital);
 
   if (currentUser.username == 'administrator' && req.query.hospital) {
       var name = req.query.hospital;
@@ -518,10 +519,10 @@ app.use('/rejectHospitalRequest', (req, res) => {
 });
 
 app.use('/hospitallist', (req, res) => {
-  if (!currentUser) {
+    if (!currentUser) {
       res.redirect('/public/login.html');
-  }
-
+    }
+  
   if (currentUser.username == 'administrator') {
       var name = req.query.name;
 
@@ -543,84 +544,184 @@ app.use('/hospitallist', (req, res) => {
 
 // Page for observing own hospital
 app.use('/myHospital', (req, res) => {
-  res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
+  //get all of the hospitals
+  var hospitals = [];
+  Hospital.find( (err, allHospitals) => {
+     if (err) {
+         console.log(err);
+         res.end();
+     } else {
+         allHospitals.forEach( (hospital) => {
+             currentUser.hospitalArray.forEach( (hospitalName) => {
+                if (hospital.name == hospitalName) {
+                    hospitals.push(hospital);
+                }
+             });
+         });
+     }
+     res.render('myHospital', {user: currentUser, hospitals: hospitals});
+  });
 });
 
 app.use('/addStaff', (req, res) => {
-  //status is 0 if not med acct, 1 if staff does not exist
-  if (req.body.enterStaffUsernameAdd) {
-      User.findOne( {username : req.body.enterStaffUsernameAdd}, (err, staff) => {
-          if (err) {
-              res.render('differentDashboard', {user : currentUser});
-          } else if (!staff) {
-              //staff member doesn't exist
-              res.render('staffMemberError', {status: 1});
-          } else {
-              if (!staff.medicalAccount) {
-                  //staff member isn't a doctor
-                  res.render('staffMemberError', {status: 0});
-              } else {
-                  if (!currentUser.staffArray) {
-                      currentUser.staffArray = [];
-                  }
+  //status is -1 if has blank fields, 0 if not med acct, 1 if staff does not exist, 2 if already in hospital
+  if (req.body.enterStaffUsernameAdd && req.body.chooseHospital) {
+      User.findOne( {username: req.body.enterStaffUsernameAdd}, (err, staff) => {
+         if (err) {
+             res.render('differentDashboard', {user: currentUser});
+         } else if (!staff) {
+             //this user does not exist
+             res.render('staffMemberError', {user: currentUser, status: 1});
+         } else {
+             if (!staff.medicalAccount) {
+                 //user exists but not a doctor
+                 res.render('staffMemberError', {user: currentUser, status: 0});
+             } else {
+                 //find the hospital schema that is being referenced
+                 Hospital.findOne({name: req.body.chooseHospital}, (err, hospital) => {
+                    if (err) {
+                        res.render('differentDashboard', {user: currentUser});
+                    } else {
+                        if (!hospital.staffArray) {
+                            hospital.staffArray = [];
+                        }
 
-                  currentUser.staffArray.push(staff);
-                  currentUser.save( (err) => {
-                     if (err) {
-                         res.json({'status' : err});
-                     } else {
-                         res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
-                     }
-                  });
-              }
-          }
+                        var alreadyIn = false;
+                        //check if user is already part of hospital
+                        for (var i = 0; i < hospital.staffArray.length; i++) {
+                            if (staff.username == hospital.staffArray[i]){
+                                res.render('staffMemberError', {user: currentUser, status: 2});
+                                alreadyIn = true;
+                            }
+                        }
+
+                        //no error had occured, so rendering error does not happen
+                        if (!alreadyIn) {
+                            hospital.staffArray.push(staff.username);
+                            hospital.save( (err) => {
+                               if (err) {
+                                   res.json({'status': err});
+                               } else {
+                                   if (!staff.employedAt) {
+                                       staff.employedAt = [];
+                                   }
+
+                                   staff.employedAt.push(hospital.name);
+
+                                   staff.save( (err) => {
+                                       if (err) {
+                                           res.json({'status': err});
+                                       } else {
+                                           //get hospitals to render the myHospital dashboard
+                                           var hospitals = [];
+                                           Hospital.find( (err, allHospitals) => {
+                                             if (err) {
+                                                 console.log(err);
+                                                 res.end();
+                                             } else {
+                                                 allHospitals.forEach( (hospital) => {
+                                                     currentUser.hospitalArray.forEach( (hospitalName) => {
+                                                        if (hospital.name == hospitalName) {
+                                                           hospitals.push(hospital);
+                                                        }
+                                                     });
+                                                 });
+                                             }
+                                               res.render('myHospital', {user: currentUser, hospitals: hospitals});
+                                          });
+                                        }
+                                    });
+                               }
+                            });
+                        }
+                    }
+                 });
+             }
+         }
       });
   } else {
-      res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
+      res.render('staffMemberError', {user: currentUser, status: -1});
   }
 });
 
 app.use('/removeStaff', (req, res) => {
-  //status 0: not doctor, status 1: not existing in hospital chosen, status 2: not in hospital
-  if(req.body.enterStaffUsernameRemove) {
-      User.findOne( {username : req.body.enterStaffUsernameRemove}, (err, staff) => {
-          if (err) {
-              res.render('differentDashboard', {user : currentUser});
-          } else if (!staff) {
-              //account does not exist
-              res.render('staffMemberError', {status: 1});
-          } else {
-              if (!staff.medicalAccount) {
-                  //account is not doctor
-                  res.render('staffMemberError', {status: 0});
-              } else {
-                var index = -1;
-                  for (var i = 0; i < currentUser.staffArray.length; i++) {
-                      if (staff.username == currentUser.staffArray[i].username) {
-                          index = i;
-                      }
-                  }
+  //status -1: empty fields, status 0: not doctor, status 1: not existing, status 3: not in hospital
+    if (req.body.enterStaffUsernameRemove && req.body.chooseHospital) {
+        User.findOne( {username: req.body.enterStaffUsernameRemove}, (err, staff) => {
+            if (err) {
+                res.render('differentDashboard', {user: currentUser});
+            } else if (!staff) {
+                //does not exist
+                res.render('staffMemberError', {user: currentUser, status: 1});
+            } else {
+                if (!staff.medicalAccount) {
+                    //not a doctor
+                    res.render('staffMemberError', {user: currentUser, status: 0});
+                } else {
+                    Hospital.findOne({name: req.body.chooseHospital}, (err, hospital) => {
+                        if (err) {
+                            res.render('differentDashboard', {user: currentUser});
+                        } else {
+                            var index = -1;
+                            for (var i = 0; i < hospital.staffArray.length; i++) {
+                                if (staff.username == hospital.staffArray[i]) {
+                                    index = i;
+                                }
+                            }
 
-                  if (index < 0) {
-                      //account is not in hospital
-                      res.render('staffMemberError', {status: 2});
-                  } else {
-                      //remove and save
-                      currentUser.staffArray.splice(index, 1);
-                      currentUser.save( (err) => {
-                         if (err) {
-                              res.json({'status' : err});
-                         } else {
-                             res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
-                         }
-                     });
-                  }
-              }
-          }
-      });
-  } else {
-      res.render('myHospital', {user: currentUser, staff: currentUser.staffArray});
-  }
+                            if (index < 0) {
+                                //account is not in the hospital
+                                res.render('staffMemberError', {user: currentUser, status: 3});
+                            } else {
+                                //remove staff member and save
+                                hospital.staffArray.splice(index, 1);
+                                hospital.save( (err) => {
+                                    if (err) {
+                                        res.json({'status': err});
+                                    } else {
+                                        //get all hospitals to render the myhospital dashboard
+                                        var index = -1;
+                                        for (var i = 0; i < staff.employedAt.length; i++) {
+                                            if (staff.employedAt[i] == hospital.name) {
+                                                index = i;
+                                            }
+                                        }
+
+                                        staff.employedAt.splice(index, 1);
+
+                                        staff.save( (err) => {
+                                            if (err) {
+                                                res.json({'status': err});
+                                            } else {
+                                                var hospitals = [];
+                                                Hospital.find( (err, allHospitals) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        res.end();
+                                                    } else {
+                                                        allHospitals.forEach( (hospital) => {
+                                                            currentUser.hospitalArray.forEach( (hospitalName) => {
+                                                                if (hospital.name == hospitalName) {
+                                                                    hospitals.push(hospital);
+                                                                }
+                                                            });
+                                                        });
+                                                    }
+                                                    res.render('myHospital', {user: currentUser, hospitals: hospitals});
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        res.render('staffMemberError', {user: currentUser, status: -1});
+    }
 });
 
 // Page for viewing user's own requests
@@ -655,14 +756,398 @@ app.get('/myRequests', function (req, res) {
   });
 });
 
+//way for doctors to submit information about vaccines
+app.use('/addGeneralVaccineInformation', function (req, res) {
+    if (req.body.enterInformation && currentUser.medicalAccount) {
+        var newInformation = new GeneralInformation({
+            publishedBy: currentUser.username,
+            hospitalName: req.body.enterHospital,
+            date: new Date(),
+            body: req.body.enterInformation,
+            approved: false
+        });
+        newInformation.save( (err) => {
+           if (err) {
+               console.log(err);
+               res.end();
+           } else {
+               console.log('logged new info');
+           }
+        });
+        res.render('addVaccineInfo', {user: currentUser, sent: "Thank you for your contribution! If the administrator approves the post, it will be published for all users to see."});
+    } else {
+        res.render('addVaccineInfo', {user: currentUser, sent: "Please enter text into the body, don't submit a blank request."});
+    }
+});
+
+//admin view of list of general info requests
+app.get('/generalInfoRequest', function (req, res) {
+    if (currentUser.username == 'administrator') {
+        GeneralInformation.find( (err, allInfo) => {
+            if (err) {
+                console.log(err);
+                res.end();
+            } else if (allInfo.length == 0) {
+                res.render('generalInfoRequest', {user: currentUser, requests: null});
+            } else {
+                var toReturn = [];
+                allInfo.forEach( (request) => {
+                    if (!request.approved) {
+                        toReturn.push(request);
+                    }
+                });
+                toReturn.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+                res.render('generalInfoRequest', {user: currentUser, requests: toReturn});
+            }
+        });
+    } else {
+        req.render('differentDashboard', {user: currentUser});
+    }
+});
+
+app.use('/viewGeneralInfoRequest', function (req, res) {
+    if (currentUser.username == 'administrator') {
+        var name = req.query.publishedBy;
+        var date = req.query.date;
+
+        GeneralInformation.find( (err, requests) => {
+           if (err) {
+               console.log(err);
+               res.end();
+           } else {
+               var toReturn;
+               requests.forEach( (request) => {
+                   if (request.publishedBy == name && date == request.date.getTime()) {
+                       toReturn = request;
+                   }
+               });
+               if (!toReturn) {
+                   res.render('adminDashboard', {user: currentUser});
+               } else {
+                   res.render('viewGeneralInfoRequest', {user: currentUser, request: toReturn});
+               }
+
+           }
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
+
+app.use('/acceptGeneralInfoRequest', function (req, res) {
+   if (currentUser.username == 'administrator') {
+       var name = req.query.publishedBy;
+       var date = req.query.date;
+
+       GeneralInformation.find( (err, allInfo) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              allInfo.forEach( (info) => {
+                 if (info.publishedBy == name && info.date.getTime() == date) {
+                     info.approved = true;
+                     info.save( (err) => {
+                        if (err) {
+                            res.json({'status': err});
+                        }
+                     });
+                 }
+              });
+          }
+       });
+       res.render('adminDashboard', {user: currentUser});
+   } else {
+       res.render('differentDashboard', {user: currentUser});
+   }
+});
+
+app.use('/rejectGeneralInfoRequest', function (req, res) {
+   if (currentUser.username == 'administrator') {
+       var name = req.query.publishedBy;
+       var date = req.query.date;
+
+       GeneralInformation.find( (err, allInfo) => {
+          if (err) {
+              console.log(err);
+              res.end();
+          } else {
+              allInfo.forEach( (info) => {
+                 if (info.publishedBy == name && info.date.getTime() == date) {
+                     info.remove();
+                 }
+              });
+          }
+       });
+       res.render('adminDashboard', {user: currentUser});
+   } else {
+       res.render('differentDashboard', {user: currentUser});
+   }
+});
+
+//renders all of the accepted posts in (hopefully) descending order of date
+app.get('/generalInformation', function (req, res) {
+    var toRender = [];
+   GeneralInformation.find( (err, allInfo) => {
+      if (err) {
+          res.end();
+      } else {
+          allInfo.forEach( (info) => {
+             if (info.approved) {
+                 toRender.push(info);
+             }
+          });
+          toRender.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+          res.render('generalInformation', {user: currentUser, posts: toRender});
+      }
+   });
+});
+
+app.get('/addVaccineInfo', function (req, res) {
+    res.render('addVaccineInfo', {user: currentUser, sent: ""});
+});
+
+//Medical users can add slots for users to sign up to get vaccines at a certain hospital
+app.get('/addScheduleSlots', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
+        if (err) {
+            res.end();
+        } else {
+            var mySlots = [];
+
+            allSlots.forEach( (slot) => {
+               if (slot.doctor.username == currentUser.username) {
+                   mySlots.push(slot);
+               }
+            });
+
+            mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+
+            res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: ""});
+        }
+    });
+});
+
+//this adds another slot to the schedule for this doctor
+app.use('/addNewSlot', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
+       if (err) {
+           res.end();
+       } else {
+           //check if slot at the same time
+           var doubleBooked = false;
+           var mySlots = [];
+           var date = new Date(req.body.enterDate);
+           allSlots.forEach( (slot) => {
+               if (slot.doctor.username == currentUser.username) {
+                   mySlots.push(slot);
+                   if (slot.date.getTime() == date.getTime()) {
+                       doubleBooked = true;
+                   }
+               }
+           });
+
+           if (doubleBooked) {
+               res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: "Oops! You double booked yourself, choose a different time."});
+           } else {
+               //if not, then add slot
+               var newSlot = new ScheduleSlot({
+                   doctor: currentUser,
+                   hospital: req.body.enterHospital,
+                   date: new Date(req.body.enterDate),
+                   vaccine: req.body.enterVaccine
+               });
+
+               newSlot.save( (err) => {
+                  if (err) {
+                      res.json({'status': err});
+                  } else {
+                      res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: "Thank you for scheduling a time slot! Users appreciate you!"});
+                  }
+               });
+           }
+       }
+    });
+});
+
+//tab that medical users can use to accept user slot requests, and get special notes from the user
+app.use('/viewAvailableSlots', function (req, res) {
+   //have to gather slots that do not have a patient and then display those
+    ScheduleSlot.find((err, allSlots) => {
+        var openSlots = [];
+
+        allSlots.forEach( (slot) => {
+           if (!slot.patient) {
+               openSlots.push(slot);
+           }
+        });
+
+        res.render('availableSlots', {user: currentUser, schedule: openSlots});
+    });
+});
+
+//medical user chooses to schedule with this particular slot
+app.use('/scheduleRequest', function (req, res) {
+    var doctorName = req.query.doctor;
+    var date = req.query.date;
+
+    ScheduleSlot.find( (err, allSlots) => {
+        var request;
+        allSlots.forEach( (slot) => {
+           if (slot.doctor.username == doctorName && slot.date.getTime() == date) {
+               request = slot;
+           }
+        });
+        res.render('finishScheduleRequest', {user: currentUser, request: request});
+    });
+});
+
+//tab that users can see and request an available slot, and write a special note that gets sent to the doctor
+app.use('/processScheduleRequest', function (req, res) {
+    var note = req.body.enterNote;
+    var doctorName = req.query.doctor;
+    var date = req.query.date;
+
+    ScheduleSlot.find( (err, allSlots) => {
+        var request;
+        allSlots.forEach( (slot) => {
+           if (slot.doctor.username == doctorName && slot.date.getTime() == date) {
+               request = slot;
+           }
+        });
+
+        request.patient = currentUser;
+        request.specialNotes = note;
+        request.save( (err) => {
+            if (err) {
+                res.render('differentDashboard', {user: currentUser});
+            } else {
+                ScheduleSlot.find( (err, allSlots) => {
+                    var mySlots = [];
+
+                    allSlots.forEach( (slot) => {
+                        if (slot.patient && slot.patient.username == currentUser.username && slot.approved) {
+                            mySlots.push (slot);
+                        }
+                    });
+                    mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+                    res.render('mySchedule', {user: currentUser, schedule: mySlots});
+                });
+            }
+        });
+    });
+});
+
+//tab that users can see what approved slots they have
+app.use('/mySchedule', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
+        var mySlots = [];
+
+        allSlots.forEach( (slot) => {
+            if (slot.patient && slot.patient.username == currentUser.username && slot.approved) {
+
+                mySlots.push(slot);
+            }
+        });
+        mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
+        res.render('mySchedule', {user: currentUser, schedule: mySlots});
+    });
+});
+
+//tab that doctors can view a list of requests for vaccines they sent out
+app.use('/listScheduleRequest', function (req, res) {
+    if (currentUser.medicalAccount) {
+        ScheduleSlot.find( (err, allSlots) => {
+            var mySlots = [];
+
+            allSlots.forEach( (slot) => {
+               if (slot.doctor.username == currentUser.username && !slot.approved) {
+                   mySlots.push(slot);
+               }
+            });
+
+            res.render('listScheduleRequests', {user: currentUser, schedule: mySlots});
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
+
+//doctors can view and approve a specific vaccine they requested to view
+app.use('/viewSlotRequest', function (req, res) {
+    ScheduleSlot.find( (err, allSlots) => {
+       var slotToView;
+
+        allSlots.forEach( (slot) => {
+            if (slot.patient && slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+                slotToView = slot;
+            }
+        });
+
+        res.render('viewSlotRequest', {user: currentUser, request: slotToView});
+    });
+});
+
+//doctor accepted a specific vaccine slot
+app.use('/acceptSlotRequest', function (req, res) {
+    if (currentUser.medicalAccount) {
+        ScheduleSlot.find( (err, allSlots) => {
+           var slotToAccept;
+
+            allSlots.forEach( (slot) => {
+               if (slot.patient && slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+                   slotToAccept = slot;
+               }
+            });
+
+            slotToAccept.approved = true;
+
+            slotToAccept.save( (err) => {
+               if (err) {
+                   res.json({'status': err});
+               } else {
+                   res.render('differentDashboard', {user: currentUser});
+               }
+            });
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
+
+//doctor rejected a specific vaccine slot
+app.use('/rejectSlotRequest', function (req, res) {
+    if (currentUser.medicalAccount) {
+        ScheduleSlot.find( (err, allSlots) => {
+            allSlots.forEach( (slot) => {
+                if (slot.patient && slot.patient.username == req.query.patient && slot.doctor.username == currentUser.username && slot.date.getTime() == req.query.date) {
+                    slot.remove();
+                }
+            });
+
+            res.render('differentDashboard', {user: currentUser});
+        });
+    } else {
+        res.render('differentDashboard', {user: currentUser});
+    }
+});
 
 app.use('/public', express.static('public'));
 
 app.use('/styles', express.static('styles'));
 
 app.use('/logout', (req, res) => {
-  currentUser = null;
-  res.redirect('/public/login.html');
+    currentUser = null;
+    res.redirect('/public/login.html');
+});
+
+app.use('/', (req, res) => {
+   if (currentUser) {
+       res.render('differentDashboard', {user: currentUser});
+   } else {
+       res.redirect('/public/login.html');
+   }
+
 });
 
 app.use('/', (req, res) => {

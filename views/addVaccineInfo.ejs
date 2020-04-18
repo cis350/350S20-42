@@ -1,0 +1,56 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Add Vaccine Information</title>
+</head>
+
+<body class="container">
+    <div class="topnav">
+        <a href="/home">Home</a>
+        <% if (user.hospitalOwner) {%>
+            <a href="/myHospital">My Hospital</a>
+        <% } %>
+        <a href="/myRequests">My Requests</a>
+        <% if (!user.medicalAccount) {%>
+            <a href="/medicalRequest">Medical Upgrade</a>
+        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
+        <% if (user.medicalAccount) {%>
+            <a class= "active" href="/addVaccineInfo">Add Vaccine Information</a>
+        <% } %>
+        <a href="/generalInformation">General Vaccine Information</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addScheduleSlots">Add Schedule Openings</a>
+        <% } %>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/listScheduleRequest">Vaccine Request List</a>
+        <% } %>
+        <a href="/mySchedule">My Schedule</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <main>
+        <h1>Hello, respected doctor!</h1>
+
+        <h3>This is where you can add information about any vaccine you please, as to update the public about side effects and groundbreaking research.</h3>
+
+        <p>Please submit a request to publish general information here: </p>
+
+        <p><%= sent %></p>
+
+        <form action="/addGeneralVaccineInformation" method="post">
+            <label for="enterHospital">Enter the hospital name this post is associated with: </label>
+            <br>
+            <input type="text" name="enterHospital">
+            <br>
+            <label for="enterInformation">Enter information: </label>
+            <br>
+            <textarea name="enterInformation" rows = "3" cols = "80"></textarea>
+            <br>
+            <input type="Submit" value="Send Request">
+        </form>
+
+    </main>
+
+</body>

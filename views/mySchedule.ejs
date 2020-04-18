@@ -6,7 +6,7 @@
 
 <body class="container">
     <div class="topnav">
-        <a class="active" href="/home">Home</a>
+        <a href="/home">Home</a>
         <% if (user.hospitalOwner) {%>
             <a href="/myHospital">My Hospital</a>
         <% } %>
@@ -26,24 +26,24 @@
         <% if (user.medicalAccount) {%>
             <a href="/listScheduleRequest">Vaccine Request List</a>
         <% } %>
-        <a href="/mySchedule">My Schedule</a>
-
+        <a class="active" href="/mySchedule">My Schedule</a>
         <a href="/logout">Logout</a>
     </div>
 
     <main>
-        <h1 style='color: darkred;'>Error</h1>
+        <h1>My Vaccine Schedule</h1>
 
-        <% if (status == 0) {%>
-           <p>Sorry, but the staff member you wanted to add/remove is not a medical account. It must be that an account is approved to be a medical account before they can be added/removed to a hosptial staff.</p>
-        <%} else if (status == 1) { %>
-            <p>Sorry, but the staff member you wanted to add/remove does not have an account. Make sure they make an account on the application, and are approved to be a medical account, and then try again!</p>
-        <%} else if (status == 3) {%>
-            <p>Sorry, but the staff member you wanted to remove does not exist in your hospital.</p>
-        <% } else if (status == 2) {%>
-            <p>Sorry, but the staff member you wanted to add already exists in your hospital!</p>
-        <% } else if (status == -1) {%>
-            <p>Please make sure that you fill out ALL parts of the form before submitting. Enter a hosptial and a username to add or remove.</p>
-        <% } %>
+        <h3>These are all of the vaccines you have scheduled!</h3>
+
+        <%schedule.forEach( (slot) => { %>
+            <p><i>Hospital: </i> <%= slot.hospital %></p>
+            <p><i>Doctor: </i> <%= slot.doctor.username %></p>
+            <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p>
+            <p><i>Vaccine: </i> <%= slot.vaccine %></p>
+            <p><i>Notes: </i> <%= slot.specialNotes %></p>
+            <hr>
+        <% }); %>
+
     </main>
+
 </body>

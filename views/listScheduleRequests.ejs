@@ -1,0 +1,52 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Dashboard</title>
+</head>
+
+<body class="container">
+    <div class="topnav">
+        <a class="active" href="/home">Home</a>
+        <% if (user.hospitalOwner) {%>
+            <a href="/myHospital">My Hospital</a>
+        <% } %>
+        <a href="/myRequests">My Requests</a>
+        <% if (!user.medicalAccount) {%>
+            <a href="/medicalRequest">Medical Upgrade</a>
+        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addVaccineInfo">Add Vaccine Information</a>
+        <% } %>
+        <a href="/generalInformation">General Vaccine Information</a>
+        <% if (user.medicalAccount) {%>
+            <a href="/addScheduleSlots">Add Schedule Openings</a>
+        <% } %>
+        <a href="/viewAvailableSlots">Schedule Vaccine</a><% if (user.medicalAccount) {%>
+            <a href="/listScheduleRequest">Vaccine Request List</a>
+        <% } %>
+        <a href="/mySchedule">My Schedule</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <main>
+        <h1>Vaccine Scheduling Requests</h1>
+
+        <h3>Here you can accept and reject various requests that users have asked from the slots that you put out.</h3>
+
+        <% if (schedule) {%>
+          <% schedule.forEach( (slot) => { %>
+            <% if (slot.patient && !slot.approved) {%>
+                <p><i>Hospital: </i> <%= slot.hospital %></p>
+                <p><i>Date: </i> <%= slot.date.toLocaleDateString("en-US")%> <%= slot.date.toLocaleTimeString("en-US")%></p>
+                <p><i>Patient: </i> <%=slot.patient.username%></p>
+                <form action="/viewSlotRequest?patient=<%=slot.patient.username %>&date=<%=slot.date.getTime()%>" method="post">
+                        <input type="submit" class="btn info" value="View More">
+                </form>
+                <hr>
+            <% } %>
+          <% }); %>
+          <% } %>
+    </main>
+
+</body>

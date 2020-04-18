@@ -32,20 +32,20 @@
     <div class="topnav">
         <a href="/adminhome">Home</a>
         <a href="/accountchange">Medical Accounts</a>
-        <a class="active" href="/hospitalcreation">Hospital Creation</a>
-        <a href="/generalInfoRequest">General Information Post Requests</a>
+        <a href="/hospitalcreation">Hospital Creation</a>
+        <a class="active" href="/generalInfoRequest">General Information Post Requests</a>
         <a href="/logout">Logout</a>
     </div>
 
     <main>
-        <h1>Hospital Creation Requests: </h1>
+        <h1>General Information Post List: </h1>
         <% if (requests) {%>
           <% requests.forEach( (request) => { %>
-              <br><i>Account:</i> <%= request.creator.username %>
-              <br><i>Hospital:</i> <%= request.name %>
-              <br><form action="/viewHospitalRequest?name=<%= request.name %>" method="post">
-                  <input type="submit" class = "btn info" value="View More">
-                  </form>
+            <br><i>Account:</i> <%= request.publishedBy %>
+            <br><i>Date:</i> <%= request.date.toLocaleDateString('en-US'); %>
+            <br><form action="/viewGeneralInfoRequest?publishedBy=<%=request.publishedBy %>&date=<%=request.date.getTime()%>" method="post">
+                    <input type="submit" class="btn info" value="View More">
+                </form>
           <% }); %>
           <% } %>
     </main>
