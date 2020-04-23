@@ -56,7 +56,8 @@ var hosSchema = new Schema({
     name: {type: String, required: true, unique: false},
     location: {type: String, required: true},
     website: String,
-    staffArray: [String]
+    staffArray: [String],
+    archived: Boolean
 });
 
 var generalInfo = new Schema({
