@@ -1,6 +1,7 @@
 package edu.upenn.cis350.hw4.data;
 
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -113,8 +114,15 @@ public class DataTasks {
 
     public static Date DateConvert(String str) {
         try {
+            if (str == null) {
+                return null;
+            }
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             Date date = formatter.parse(str.replaceAll("Z$", "+0000"));
+            System.out.println(date);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+            String strDate = dateFormat.format(date);
+            System.out.println("Converted String: " + strDate);
             return date;
         } catch (Exception e) {
             e.printStackTrace();

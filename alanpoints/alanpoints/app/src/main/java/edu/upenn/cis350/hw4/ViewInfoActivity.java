@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import java.net.URL;
 
 import edu.upenn.cis350.hw4.data.AccessWebTask;
+import edu.upenn.cis350.hw4.data.DataTasks;
 import edu.upenn.cis350.hw4.data.Person;
 
 public class ViewInfoActivity extends AppCompatActivity {
@@ -29,6 +30,7 @@ public class ViewInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_info);
         Intent i = getIntent();
         data = (Person) i.getSerializableExtra("data");
+        data = DataTasks.loginCheck(data);
 
         usernameText = (TextView)findViewById(R.id.usernameText);
         fullNameText = (EditText)findViewById(R.id.fullNameText);
@@ -37,19 +39,19 @@ public class ViewInfoActivity extends AppCompatActivity {
         dobText = (EditText)findViewById(R.id.dobText);
 
 
-        if (data.getUsername().length() != 0) {
+        if (data.getUsername() != null && data.getUsername().length() != 0) {
             usernameText.setText(data.getUsername());
         }
 
-        if (data.getFullName().length() != 0) {
+        if (data.getFullName() != null && data.getFullName().length() != 0) {
             fullNameText.setText(data.getFullName());
         }
 
-        if (data.getBlood().length() != 0) {
+        if (data.getBlood() != null && data.getBlood().length() != 0) {
             bloodText.setText(data.getBlood());
         }
 
-        if (data.getEmail().length() != 0) {
+        if (data.getEmail() != null && data.getEmail().length() != 0) {
             emailText.setText(data.getEmail());
         }
     }
