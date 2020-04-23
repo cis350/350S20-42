@@ -109,10 +109,40 @@ app.use('/checkLogin', (req, res) => {
               if (currentUser.username == "administrator") {
                   res.render('adminDashboard', {user: currentUser});
               } else {
-                  res.render('differentDashboard', {user: currentUser});
-              }
+                  Hospital.find( (err, allHospitals) => {
+                    if (err) {
+                        console.log(err);
+                        res.end();
+                    } else {
+                        allHospitals.forEach((hospital) => {
+                            var index = -1;
+                            for (var i = 0; i < currentUser.hospitalArray.length; i++) {
+                                if (currentUser.hospitalArray[i]
+                                    == hospital.name && hospital.archived) {
+                                    index = i;
+                                    } 
+                            }
+                            if (index >= 0) {
+                                currentUser.hospitalArray.splice(index, 1);
+                            }
+                        });
+
+                        if (currentUser.hospitalArray.length == 0) {
+                            currentUser.hospitalOwner = false;
+                        }
+                        currentUser.save((err) => {
+                            if (err) {
+                                console.log(err);
+                                res.end();
+                            } else {
+                                res.render('differentDashboard', {user: currentUser});
+                            }
+                        });    
+                    }
+              });
           }
-      });
+      }
+    });
   } else {
       res.redirect('/');
   }
@@ -214,7 +244,6 @@ app.use('/createHosRequest', (req, res) => {
   }
 });
 // End of creating hopsital request functionality
-
 
 // Start of admin actions
 app.get('/adminhome', function (req, res) {
@@ -437,7 +466,8 @@ app.use('/acceptHospitalRequest', (req, res) => {
                           owner: request.creator,
                           name: request.name,
                           location: request.location,
-                          website: request.website
+                          website: request.website,
+                          archived: false
                       });
 
                       console.log(newHospital);
@@ -539,8 +569,104 @@ app.use('/hospitallist', (req, res) => {
   }
 
 });
-// End of admin action
 
+
+app.use('/archiveHospital', (req, res) => {
+    //getting a list of all the hospitals
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }
+    Hospital.find( (err, allHospitals) => {
+        if (err) {
+            console.log(err);
+            res.end();
+        } else {
+            var hospitalList = [];
+            allHospitals.forEach( (hosp) => {
+                if (!hosp.archived) {
+                    hospitalList.push(hosp);
+                } 
+            });
+            res.render('archiveHospital', {hospitals: hospitalList});
+        }
+    });
+});
+
+app.use('/viewArchiveHospital', (req, res) => {
+    //viewing one specific hospital
+    if (!currentUser) {
+      res.redirect('/public/login.html');
+    }
+    Hospital.find( (err, allHospitals) => {
+        if (err) {
+            console.log(err);
+            res.end();
+        } else {
+            allHospitals.forEach( (hos) => {
+                if (hos.name == req.query.name && hos.owner.username == req.query.owner && hos.location == req.query.location) {
+                    res.render('viewArchiveHospital', {hospital: hos});
+                } 
+            });
+        }
+    });
+});
+
+app.use('/archiveSelectedHospital', (req, res) => {
+    //archiving one specific hospital
+    if (!currentUser) {
+        res.redirect('/public/login.html');
+    }
+    Hospital.find( (err, allHospitals) => {
+       if (err) {
+           console.log(err);
+           res.end();
+       } else {
+           allHospitals.forEach( (hos) => {
+                if (hos.name == req.query.name && hos.owner.username == req.query.owner && hos.location == req.query.location) {
+                    
+                    hos.archived = true;
+                    hos.staffArray = [];
+                    hos.save( (err) => {
+                       if (err) {
+                           console.log(err);
+                           res.end();
+                       } else {
+                           //delete all null-patient slots with this hos name
+                           ScheduleSlot.find( (err, allSlots) => {
+                              if (err) {
+                                  console.log(err);
+                                  res.end();
+                              } else {
+                                  allSlots.forEach((slot) => {
+                                        if (!slot.approved && slot.hospital == hos.name && !slot.patient) {
+                                            slot.remove();
+                                        }
+                                  });
+                                  
+                                  Hospital.find( (err, allHospitals) => {
+                                    if (err) {
+                                        console.log(err);
+                                        res.end();
+                                    } else {
+                                        var hospitalList = [];
+                                        allHospitals.forEach( (hosp) => {
+                                            if (!hosp.archived) {
+                                                hospitalList.push(hosp);
+                                            } 
+                                        });
+                                        res.render('archiveHospital', {hospitals: hospitalList});
+                                    }
+                                });
+                              }
+                           });
+                       }
+                    });
+                }
+           });
+       }
+    });
+});
+// End of admin action
 
 // Page for observing own hospital
 app.use('/myHospital', (req, res) => {
@@ -553,7 +679,7 @@ app.use('/myHospital', (req, res) => {
      } else {
          allHospitals.forEach( (hospital) => {
              currentUser.hospitalArray.forEach( (hospitalName) => {
-                if (hospital.name == hospitalName) {
+                if (!hospital.archived && hospital.name == hospitalName) {
                     hospitals.push(hospital);
                 }
              });
@@ -922,8 +1048,35 @@ app.get('/addScheduleSlots', function (req, res) {
             });
 
             mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
-
-            res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: ""});
+            
+            Hospital.find( (err, allHospitals) => {
+                if (err) {
+                    console.log(err);
+                    res.end();
+                } else {
+                    allHospitals.forEach((hospital) => {
+                        var index = -1;
+                        for (var i = 0; i < currentUser.employedAt.length; i++) {
+                            if (currentUser.employedAt[i]
+                                == hospital.name && hospital.archived) {
+                                index = i;
+                                } 
+                        }
+                        if (index >= 0) {
+                            currentUser.employedAt.splice(index, 1);
+                        }
+                    });
+                    
+                    currentUser.save( (err) => {
+                        if (err) {
+                            console.log(err);
+                            res.end();
+                        } else {
+                            res.render('addScheduleSlots', {user: currentUser, schedule: mySlots, sent: ""});
+                        }
+                    });
+                }
+            });
         }
     });
 });
@@ -1142,17 +1295,40 @@ app.use('/logout', (req, res) => {
 });
 
 app.use('/', (req, res) => {
-   if (currentUser) {
-       res.render('differentDashboard', {user: currentUser});
-   } else {
-       res.redirect('/public/login.html');
-   }
-
-});
-
-app.use('/', (req, res) => {
   if (currentUser) {
-      res.render('differentDashboard', {user: currentUser});
+      Hospital.find( (err, allHospitals) => {
+            if (err) {
+                console.log(err);
+                res.end();
+            } else {
+                allHospitals.forEach((hospital) => {
+                    var index = -1;
+                    for (var i = 0; i < currentUser.hospitalArray.length; i++) {
+                        if (currentUser.hospitalArray[i]
+                            == hospital.name && hospital.archived) {
+                            index = i;
+                            } 
+                    }
+                    if (index >= 0) {
+                        currentUser.hospitalArray.splice(index, 1);
+                    }
+                });
+                
+                if (currentUser.hospitalArray.length == 0) {
+                    currentUser.hospitalOwner = false;
+                }
+                currentUser.save((err) => {
+                    if (err) {
+                        console.log(err);
+                        res.end();
+                    } else {
+                        res.render('differentDashboard', {user: currentUser});
+                    }
+                });    
+            }
+        });
+      
+      
   } else {
       res.redirect('/public/login.html');
   }
