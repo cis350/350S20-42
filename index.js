@@ -69,7 +69,9 @@ app.use('/hospitals', (req, res) => {
       } else {
          var hosNames = []
          allHospitals.forEach( (hospital) => {
-             hosNames.push(hospital.name);
+             if (!hospital.archived) {
+                 hosNames.push(hospital.name);
+             }
          });
          res.json(hosNames);
       }
@@ -86,7 +88,7 @@ app.use('/procedures', (req, res) => {
           res.json( { 'status' : 'no openings' } );
       } else {
           var listings = []
-          if (hospital) {
+          if (hospital && !hospital.archived) {
               allSlots.forEach( (listing) => {
                   if (listing.hospital == hospital && !listing.patient) {
                       listings.push(listing);
