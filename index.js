@@ -214,6 +214,7 @@ app.use('/addReview', (req, res) => {
 
 app.use('/allDoneProcedures', (req, res) => {
     var username = req.query.username;
+    var hospital = req.query.hospital;
 
     CompletedProcedure.find( (err, allCompleted) => {
         if (err) {
@@ -224,7 +225,7 @@ app.use('/allDoneProcedures', (req, res) => {
            if (username) {
              var listings = [];
              allCompleted.forEach( (listing) => {
-                 if (listing.username == username) {
+                 if (listing.username == username && listing.hospital == hospital) {
                      listings.push(listing);
                  }
              });
