@@ -90,18 +90,41 @@ app.use('/procedures', (req, res) => {
       } else if (allSlots.length == 0) {
           res.json( { 'status' : 'no openings' } );
       } else {
-          var listings = []
-          if (hospital && !hospital.archived) {
-              allSlots.forEach( (listing) => {
-                  if (listing.hospital == hospital && !listing.patient) {
-                      listings.push(listing);
-                  }
-              });
-              res.json(listings);
+          if (hospital) {
+            Hospital.findOne( {name: hospital}, (err, curr) => {
+              if (err) {
+                res.json( {'status' : err});
+              } else if (curr) {
+                var listings = []
+                if (!curr.archived) {
+                  allSlots.forEach( (listing) => {
+                      if (listing.hospital == hospital && !listing.patient) {
+                          listings.push(listing);
+                      }
+                  });
+                  res.json(listings);
+                }
+              } else {
+                  res.json(listings);
+              }
+            });
           } else {
+              var listings = []
               allSlots.forEach( (listing) => {
                   if (!listing.patient) {
-                      listings.push(listing);
+                    /*
+                    Hospital.findOne( {name: listing.hospital}, (err, curr) => {
+                      if (err) {
+                        res.json( {'status' : err});
+                      } else if (curr) {
+                        if (!curr.archived) {
+                          console.log("HERE");
+                          listings.push(listing);
+                        }
+                      }
+                    });
+                    */
+                    listings.push(listing);
                   }
               });
               res.json(listings);
@@ -109,6 +132,69 @@ app.use('/procedures', (req, res) => {
       }
   });
 });
+
+app.use('/reviews', (req, res) => {
+    var hospital = req.query.hospital;
+
+    Review.find( (err, allReviews) => {
+      if (err) {
+          res.json( { 'status' : err } );
+      } else if (allReviews.length == 0) {
+          res.json( { 'status' : 'no reviews' } );
+      } else {
+          var listings = []
+          if (hospital) {
+            // Add reviews in a hospital if it's not archived, else add nothing
+            Hospital.findOne( {name: hospital}, (err, curr) => {
+              if (err) {
+                res.json( {'status' : err});
+              } else if (curr) {
+                var listings = []
+                if (!curr.archived) {
+                  allReviews.forEach( (listing) => {
+                      if (listing.hospital == hospital) {
+                          listings.push(listing);
+                      }
+                  });
+                  res.json(listings);
+                }
+              } else {
+                  res.json(listings);
+              }
+            });
+          } else {
+              // If hospital not specified, add all reviews
+              // NOTE: Only for testing purposes
+              res.json(allReviews);
+          }
+      }
+  });
+});
+
+app.use('/addReview', (req, res) => {
+    var username = req.query.username;
+    var hospital = req.query.hospital;
+    var review = req.query.review;
+    // If all fields specified then create a new review, else don't
+    if (username && hospital && review) {
+        var newReview = new Review ({
+            username: username,
+            hospital: hospital,
+            review: review,
+        });
+
+        newReview.save( (err) => {
+          if (err) {
+              res.json( { 'status' : err } );
+          } else {
+               res.json( { 'status' : 'success' } );
+          }
+        });
+    } else {
+      res.json({'status': 'not all fields specified'});
+    }
+});
+
 
 app.use('/allDoneProcedures', (req, res) => {
     CompletedProcedure.find( (err, allCompleted) => {
