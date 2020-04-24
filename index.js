@@ -37,6 +37,7 @@ var newPerson = new Person ({
  // defined in Person.js
  username: req.query.username,
  password: req.query.password,
+ fullName: req.query.fullName,
 });
 
 newPerson.save( (err) => {
@@ -142,6 +143,7 @@ app.use('/requestProcedure', (req, res) => {
         }
     });
 });
+
 app.use('/editInfo', (req, res) => {
     var username = req.query.username;
     var password = req.query.password;
