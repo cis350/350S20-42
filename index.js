@@ -31,6 +31,8 @@ var PersonVaccine = schemas.personVaccineSchema;
 var Hospital = schemas.hosModel;
 var ScheduleSlot = schemas.scheduleSlotModel;
 var VaccineInfo = schemas.vaccineModel;
+var Review = schemas.reviewModel;
+var CompletedProcedure = schemas.completedProcedureModel;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -106,6 +108,18 @@ app.use('/procedures', (req, res) => {
           }
       }
   });
+});
+
+app.use('/allDoneProcedures', (req, res) => {
+    CompletedProcedure.find( (err, allCompleted) => {
+        if (err) {
+          res.json( { 'status' : err } );
+        } else if (allCompleted.length == 0) {
+           res.json( { 'status' : 'no people' } );
+        } else {
+           res.json(allCompleted);
+        }
+    });
 });
 
 app.use('/requestProcedure', (req, res) => {

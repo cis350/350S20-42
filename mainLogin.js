@@ -15,6 +15,7 @@ var HospitalRequest = schemas.hosRequestModel;
 var Hospital = schemas.hosModel;
 var GeneralInformation = schemas.generalInfoModel;
 var ScheduleSlot = schemas.scheduleSlotModel;
+var CompletedProcedure = schemas.completedProcedureModel;
 
 var currentUser = null;
 
@@ -120,7 +121,7 @@ app.use('/checkLogin', (req, res) => {
                                 if (currentUser.hospitalArray[i]
                                     == hospital.name && hospital.archived) {
                                     index = i;
-                                    } 
+                                    }
                             }
                             if (index >= 0) {
                                 currentUser.hospitalArray.splice(index, 1);
@@ -137,7 +138,7 @@ app.use('/checkLogin', (req, res) => {
                             } else {
                                 res.render('differentDashboard', {user: currentUser});
                             }
-                        });    
+                        });
                     }
               });
           }
@@ -286,7 +287,7 @@ app.get('/hospitalcreation', function (req, res) {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
-  
+
   if (currentUser.username == 'administrator') {
       HospitalRequest.find( (err, allRequests) => {
           if (err) {
@@ -308,7 +309,7 @@ app.use('/viewAccountRequest', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
-  
+
   if (currentUser.username == 'administrator' && req.query.name) {
     var name = req.query.name;
 
@@ -552,7 +553,7 @@ app.use('/hospitallist', (req, res) => {
     if (!currentUser) {
       res.redirect('/public/login.html');
     }
-  
+
   if (currentUser.username == 'administrator') {
       var name = req.query.name;
 
@@ -585,7 +586,7 @@ app.use('/archiveHospital', (req, res) => {
             allHospitals.forEach( (hosp) => {
                 if (!hosp.archived) {
                     hospitalList.push(hosp);
-                } 
+                }
             });
             res.render('archiveHospital', {hospitals: hospitalList});
         }
@@ -605,7 +606,7 @@ app.use('/viewArchiveHospital', (req, res) => {
             allHospitals.forEach( (hos) => {
                 if (hos.name == req.query.name && hos.owner.username == req.query.owner && hos.location == req.query.location) {
                     res.render('viewArchiveHospital', {hospital: hos});
-                } 
+                }
             });
         }
     });
@@ -623,7 +624,7 @@ app.use('/archiveSelectedHospital', (req, res) => {
        } else {
            allHospitals.forEach( (hos) => {
                 if (hos.name == req.query.name && hos.owner.username == req.query.owner && hos.location == req.query.location) {
-                    
+
                     hos.archived = true;
                     hos.staffArray = [];
                     hos.save( (err) => {
@@ -642,7 +643,7 @@ app.use('/archiveSelectedHospital', (req, res) => {
                                             slot.remove();
                                         }
                                   });
-                                  
+
                                   Hospital.find( (err, allHospitals) => {
                                     if (err) {
                                         console.log(err);
@@ -652,7 +653,7 @@ app.use('/archiveSelectedHospital', (req, res) => {
                                         allHospitals.forEach( (hosp) => {
                                             if (!hosp.archived) {
                                                 hospitalList.push(hosp);
-                                            } 
+                                            }
                                         });
                                         res.render('archiveHospital', {hospitals: hospitalList});
                                     }
@@ -1048,7 +1049,7 @@ app.get('/addScheduleSlots', function (req, res) {
             });
 
             mySlots.sort(function(a, b) {return b.date.getTime() - a.date.getTime()});
-            
+
             Hospital.find( (err, allHospitals) => {
                 if (err) {
                     console.log(err);
@@ -1060,13 +1061,13 @@ app.get('/addScheduleSlots', function (req, res) {
                             if (currentUser.employedAt[i]
                                 == hospital.name && hospital.archived) {
                                 index = i;
-                                } 
+                                }
                         }
                         if (index >= 0) {
                             currentUser.employedAt.splice(index, 1);
                         }
                     });
-                    
+
                     currentUser.save( (err) => {
                         if (err) {
                             console.log(err);
@@ -1262,6 +1263,24 @@ app.use('/acceptSlotRequest', function (req, res) {
                    res.render('differentDashboard', {user: currentUser});
                }
             });
+
+            // Whenever a slot is accepted, save a completed procedure to DB
+            var newProcedure = new CompletedProcedure({
+              username: slotToAccept.patient.username,
+              hospital: slotToAccept.hospital,
+              doctor: slotToAccept.doctor.username,
+              procedure: slotToAccept.vaccine,
+            });
+
+            newProcedure.save( (err) => {
+                if (err) {
+                    console.log(err);
+                    res.end();
+                } else {
+                    console.log('logged the request');
+                }
+            });
+
         });
     } else {
         res.render('differentDashboard', {user: currentUser});
@@ -1307,13 +1326,13 @@ app.use('/', (req, res) => {
                         if (currentUser.hospitalArray[i]
                             == hospital.name && hospital.archived) {
                             index = i;
-                            } 
+                            }
                     }
                     if (index >= 0) {
                         currentUser.hospitalArray.splice(index, 1);
                     }
                 });
-                
+
                 if (currentUser.hospitalArray.length == 0) {
                     currentUser.hospitalOwner = false;
                 }
@@ -1324,11 +1343,11 @@ app.use('/', (req, res) => {
                     } else {
                         res.render('differentDashboard', {user: currentUser});
                     }
-                });    
+                });
             }
         });
-      
-      
+
+
   } else {
       res.redirect('/public/login.html');
   }

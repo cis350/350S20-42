@@ -38,6 +38,19 @@ var userSchema = new Schema({
   dob: Date
 });
 
+var completedProcedureSchema = new Schema({
+  username: String,
+  hospital: String,
+  doctor: String,
+  procedure: String
+});
+
+var reviewSchema = new Schema({
+  username: String,
+  hospital: String,
+  review: String
+});
+
 var medRequestSchema = new Schema({
   creator: {type: userSchema, required: true, unique: false},
   description: {type: String, unique: false}
@@ -85,4 +98,6 @@ hosModel: mongoose.model('Hospital', hosSchema),
 personVaccineSchema: mongoose.model('PersonVaccine', personVaccineSchema),
 generalInfoModel: mongoose.model('GeneralInformation', generalInfo),
 scheduleSlotModel: mongoose.model('ScheduleSlot', scheduleSlot),
-vaccineModel: mongoose.model('VaccineInfo', vaccineSchema)};
+vaccineModel: mongoose.model('VaccineInfo', vaccineSchema),
+reviewModel: mongoose.model('Review', reviewSchema),
+completedProcedureModel: mongoose.model('CompletedProcedure', completedProcedureSchema)};
