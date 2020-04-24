@@ -177,19 +177,35 @@ app.use('/addReview', (req, res) => {
     var review = req.query.review;
     // If all fields specified then create a new review, else don't
     if (username && hospital && review) {
-        var newReview = new Review ({
-            username: username,
-            hospital: hospital,
-            review: review,
-        });
-
-        newReview.save( (err) => {
+        Review.findOne( {username: username, hospital: hospital}, (err, curr) => {
           if (err) {
-              res.json( { 'status' : err } );
+            res.json( {'status' : err});
+          } else if (curr) {
+              curr.review = review;
+              curr.save( (err) => {
+                if (err) {
+                    res.json( { 'status' : err } );
+                } else {
+                     res.json( { 'status' : 'success on old' } );
+                }
+              });
           } else {
-               res.json( { 'status' : 'success' } );
+              var newReview = new Review ({
+                  username: username,
+                  hospital: hospital,
+                  review: review,
+              });
+
+              newReview.save( (err) => {
+                if (err) {
+                    res.json( { 'status' : err } );
+                } else {
+                     res.json( { 'status' : 'success on new' } );
+                }
+              });
           }
         });
+
     } else {
       res.json({'status': 'not all fields specified'});
     }
@@ -197,13 +213,25 @@ app.use('/addReview', (req, res) => {
 
 
 app.use('/allDoneProcedures', (req, res) => {
+    var username = req.query.username;
+
     CompletedProcedure.find( (err, allCompleted) => {
         if (err) {
           res.json( { 'status' : err } );
         } else if (allCompleted.length == 0) {
            res.json( { 'status' : 'no people' } );
         } else {
-           res.json(allCompleted);
+           if (username) {
+             var listings = [];
+             allCompleted.forEach( (listing) => {
+                 if (listing.username == username) {
+                     listings.push(listing);
+                 }
+             });
+             res.json(listings);
+           } else {
+             res.json(allCompleted);
+           }
         }
     });
 });
