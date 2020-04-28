@@ -12,7 +12,7 @@ app.listen(3000, () => {
     console.log('Listening on port 3000');
 });
 
-/*
+
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
 
@@ -22,7 +22,7 @@ client.connect(err => {
   // perform actions on the collection object
   client.close();
 });
-*/
+
 
 
 var schemas = require('./User.js');
@@ -31,6 +31,7 @@ var PersonVaccine = schemas.personVaccineSchema;
 var Hospital = schemas.hosModel;
 var ScheduleSlot = schemas.scheduleSlotModel;
 var VaccineInfo = schemas.vaccineModel;
+var PersonTravel = schemas.personTravelSchema;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -239,6 +240,39 @@ app.use('/addVaccine', (req, res) => {
        }
    });
 });
+
+app.use('/addTravel', (req, res) => {
+    var username = req.query.username;
+    var password = req.query.password;
+    var vCountry = req.query.country;
+    var vStart = new Date(Date.parse(req.query.start));
+    var vEnd = new Date(Date.parse(req.query.end));
+    var newTravel = new PersonTravel ({
+        country: vCountry,
+        start : vStart,
+        end : vEnd,
+    });
+
+    Person.findOne( { username: username, password: password }, (err, person) => {
+        if (err) {
+           res.json( { 'status' : err } );
+        } else if (!person) {
+           res.json( { 'status' : 'no person' } );
+        } else {
+           person.travels.push(newTravel);
+           person.save( (err) => {
+             if (err) {
+               res.json( { 'status' : err } );
+             } else {
+               res.json( { 'status' : 'success' } );
+             }
+         });
+       }
+   });
+});
+
+
+
 
 app.use('/addVaccineInfo', (req, res) => {
 var newVaccine = new VaccineInfo ({
