@@ -64,7 +64,7 @@
             android:id="@+id/addVaccineButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Vaccine"
+            android:text="Add Travel"
             android:onClick="addClick"
             android:textSize="24sp" />
 

@@ -347,7 +347,10 @@ var newPerson = new Person ({
  password: req.query.password,
  fullName: req.query.fullName,
 });
-
+Person.findOne( { username: req.query.username }, (err, person) => {
+        if (err) {
+           res.json( { 'status' : err } );
+        } else if (!person) {
 newPerson.save( (err) => {
          if (err) {
           res.json( { 'status' : err } );
@@ -355,7 +358,9 @@ newPerson.save( (err) => {
           res.json( { 'status' :'success' } );
          }
     });
-});
+} else {
+  res.json( { 'status' : 'exists' } );
+}});});
 
 app.use('/all', (req, res) => {
     Person.find( (err, allPeople) => {

@@ -69,9 +69,17 @@
             android:id="@+id/travelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View/Add Travel"
+            android:text="View Travel"
             android:onClick="travelClick"
             android:textSize="24sp" />
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Travel"
+            android:onClick="addTravelClick"
+            android:textSize="24sp" />
+
         <Button android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textSize="24sp"

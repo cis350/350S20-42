@@ -27,13 +27,6 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="59dp">
 
-            <Button
-                android:id="@+id/addButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Back"
-                android:onClick="addClick"
-                android:textSize="24sp" />
 
             <Button
                 android:id="@+id/recButton"
@@ -47,8 +40,8 @@
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
-                android:onClick="addClick"
+                android:text="Back"
+                android:onClick="backClick"
                 android:textSize="24sp" />
 
             <ListView xmlns:android="http://schemas.android.com/apk/res/android"

@@ -101,11 +101,11 @@ vaccineModel: mongoose.model('VaccineInfo', vaccineSchema)};
 var mongoose = require('mongoose');
 
 //Atlas Database (Controlled by Ali)
-// const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
-// mongoose.connect(uri);
+const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
+mongoose.connect(uri);
 
 // Local Database
-mongoose.connect('mongodb://localhost:27017/database');
+//mongoose.connect('mongodb://localhost:27017/database');
 
 var Schema = mongoose.Schema;
 
