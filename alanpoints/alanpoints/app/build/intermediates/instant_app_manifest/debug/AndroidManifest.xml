@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.upenn.cis350.hw4"
+    android:targetSandboxVersion="2"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="29" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:debuggable="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:testOnly="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true" >
+        <activity android:name="edu.upenn.cis350.hw4.VaccineInfoActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.AllVaccinesActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.AppSearchActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.AppSearchAllActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.AppSearchSomeActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.ProcedureSignupActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.ViewInfoActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.SelectHospitalActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.CreateAccountActivity" />
+        <activity android:name="edu.upenn.cis350.hw4.ImagePickerActivity" />
+        <activity
+            android:name="edu.upenn.cis350.hw4.Options"
+            android:label="@string/title_activity_options"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="edu.upenn.cis350.hw4.AddOneVaccine"
+            android:label="@string/title_activity_add_one_vaccine"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="edu.upenn.cis350.hw4.ViewVaccinesActivity"
+            android:label="@string/title_activity_add_vaccine"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="edu.upenn.cis350.hw4.Login2Activity"
+            android:label="@string/title_activity_login" />
+        <activity android:name="edu.upenn.cis350.hw4.MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="androidx.lifecycle.ProcessLifecycleOwnerInitializer"
+            android:authorities="edu.upenn.cis350.hw4.lifecycle-process"
+            android:exported="false"
+            android:multiprocess="true" />
+        <provider
+            android:name="com.android.tools.ir.server.InstantRunContentProvider"
+            android:authorities="edu.upenn.cis350.hw4.com.android.tools.ir.server.InstantRunContentProvider"
+            android:multiprocess="true" />
+    </application>
+
+</manifest>

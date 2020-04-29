@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 
 //Atlas Database (Controlled by Ali)
-// const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
-// mongoose.connect(uri);
+const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
+mongoose.connect(uri);
 
 // Local Database
-mongoose.connect('mongodb://localhost:27017/database');
+//mongoose.connect('mongodb://localhost:27017/database');
 
 var Schema = mongoose.Schema;
 
@@ -15,11 +15,18 @@ var vaccineSchema = new Schema({
   info: String
 });
 
+var personTravelSchema = new Schema({
+  country: String,
+  start: {type: Date, default: Date.now},
+  end: {type: Date, default: Date.now}
+});
+
+
 var personVaccineSchema = new Schema({
-	id: String,
-	date: {type: Date, default: Date.now},
-	hospitalId: String,
-	verified: Boolean
+  id: String,
+  date: {type: Date, default: Date.now},
+  hospitalId: String,
+  verified: Boolean
 });
 
 var userSchema = new Schema({
@@ -32,6 +39,7 @@ var userSchema = new Schema({
   sentMedicalRequest: Boolean,
   fullName: String,
   img: {data: Buffer, contentType:String},
+  travels: [personTravelSchema],
   vaccines: [personVaccineSchema],
   email: String,
   blood: String,
@@ -96,8 +104,11 @@ medRequestModel: mongoose.model('MedicalRequest', medRequestSchema),
 hosRequestModel: mongoose.model('HospitalRequest', hosRequestSchema),
 hosModel: mongoose.model('Hospital', hosSchema),
 personVaccineSchema: mongoose.model('PersonVaccine', personVaccineSchema),
+personTravelSchema: mongoose.model('PersonTravel', personTravelSchema),
 generalInfoModel: mongoose.model('GeneralInformation', generalInfo),
 scheduleSlotModel: mongoose.model('ScheduleSlot', scheduleSlot),
 vaccineModel: mongoose.model('VaccineInfo', vaccineSchema),
 reviewModel: mongoose.model('Review', reviewSchema),
 completedProcedureModel: mongoose.model('CompletedProcedure', completedProcedureSchema)};
+
+

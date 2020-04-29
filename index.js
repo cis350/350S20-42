@@ -1,3 +1,4 @@
+
 var express = require('express');
 var app = express();
 var fs = require('fs');
@@ -15,7 +16,6 @@ app.listen(3000, () => {
 /*
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://alluser:alluser@350s20-42mongodb-pvpes.mongodb.net/test?retryWrites=true&w=majority";
-
 const client = new MongoClient(uri, { useNewUrlParser: true });
 client.connect(err => {
   const collection = client.db("test").collection("devices");
@@ -33,6 +33,7 @@ var ScheduleSlot = schemas.scheduleSlotModel;
 var VaccineInfo = schemas.vaccineModel;
 var Review = schemas.reviewModel;
 var CompletedProcedure = schemas.completedProcedureModel;
+var PersonTravel = schemas.personTravelSchema;
 
 app.use('/create', (req, res) => {
 var newPerson = new Person ({
@@ -41,7 +42,10 @@ var newPerson = new Person ({
  password: req.query.password,
  fullName: req.query.fullName,
 });
-
+Person.findOne( { username: req.query.username }, (err, person) => {
+        if (err) {
+           res.json( { 'status' : err } );
+        } else if (!person) {
 newPerson.save( (err) => {
          if (err) {
           res.json( { 'status' : err } );
@@ -49,7 +53,9 @@ newPerson.save( (err) => {
           res.json( { 'status' :'success' } );
          }
     });
-});
+} else {
+  res.json( { 'status' : 'exists' } );
+}});});
 
 app.use('/all', (req, res) => {
     Person.find( (err, allPeople) => {
@@ -132,6 +138,38 @@ app.use('/procedures', (req, res) => {
       }
   });
 });
+
+
+app.use('/addTravel', (req, res) => {
+    var username = req.query.username;
+    var password = req.query.password;
+    var vCountry = req.query.country;
+    var vStart = new Date(Date.parse(req.query.start));
+    var vEnd = new Date(Date.parse(req.query.end));
+    var newTravel = new PersonTravel ({
+        country: vCountry,
+        start : vStart,
+        end : vEnd,
+    });
+
+    Person.findOne( { username: username, password: password }, (err, person) => {
+        if (err) {
+           res.json( { 'status' : err } );
+        } else if (!person) {
+           res.json( { 'status' : 'no person' } );
+        } else {
+           person.travels.push(newTravel);
+           person.save( (err) => {
+             if (err) {
+               res.json( { 'status' : err } );
+             } else {
+               res.json( { 'status' : 'success' } );
+             }
+         });
+       }
+   });
+});
+
 
 app.use('/reviews', (req, res) => {
     var hospital = req.query.hospital;
