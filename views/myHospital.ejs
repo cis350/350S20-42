@@ -14,9 +14,7 @@
         <% if (!user.medicalAccount) {%>
             <a href="/medicalRequest">Medical Upgrade</a>
         <% } %>
-        <% if (!user.hospitalOwner) {%>
-            <a href="/hospitalRequest">Hospital Creation</a>
-        <% } %>
+        <a href="/hospitalRequest">Hospital Creation</a>        
         <% if (user.medicalAccount) {%>
             <a href="/addVaccineInfo">Add Vaccine Information</a>
         <% } %>
@@ -64,7 +62,9 @@
                     <label for="chooseHospital">Choose Hospital: </label> <br>
                     <select name="chooseHospital">
                         <% user.hospitalArray.forEach( (hospital) => { %>
-                            <option value="<%=hospital%>"><%=hospital%></option>
+                            <%if (!hospital.archived) {%>
+                                <option value="<%=hospital%>"><%=hospital%></option>
+                            <%} %>
                         <% }); %>
 
                     </select> <br>
@@ -80,7 +80,9 @@
                     <label for="chooseHospital">Choose Hospital: </label> <br>
                     <select name="chooseHospital">
                         <% user.hospitalArray.forEach( (hospital) => { %>
-                            <option value="<%=hospital%>"><%=hospital%></option>
+                            <%if (!hospital.archived) {%>
+                                <option value="<%=hospital%>"><%=hospital%></option>
+                            <%} %>
                         <% }); %>
                     </select> <br>
                     <label for="enterStaffUsernameRemove">Enter Staff Username: </label> <br>

@@ -1,0 +1,41 @@
+<head>
+    <script src="../mainLogin.js"></script>
+    <link rel='stylesheet' href='/styles/stylesDashboard.css'/>
+    <title>Vaccine App Admin Dashboard</title>
+</head>
+
+<body class="container">
+    <div class="topnav">
+        <a href="/adminhome">Home</a>
+        <a href="/accountchange">Medical Accounts</a>
+        <a href="/hospitalcreation">Hospital Creation</a>
+        <a href="/generalInfoRequest">General Information Post Requests</a>
+        <a class="active" href="/archiveHospital">Archive Hospital</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <main>
+        <h1>Archive Hospital</h1>
+        <h3>Make your choice.</h3>
+        
+        <p><i>Name: </i><%=hospital.name%></p>
+        <p><i>Owner: </i><%=hospital.owner.username%></p>
+        <p><i>Location: </i><%=hospital.location%></p>
+        <% if (hospital.website) { %>
+            <p><i>Webs</i> <%=hospital.website%></p>
+        <% } %>
+        <p>Staff: </p>
+        <% hospital.staffArray.forEach( (member) => { %>
+            <p>member</p>
+        <% }); %>
+        
+        <form action="/archiveSelectedHospital?name=<%=hospital.name%>&owner=<%=hospital.owner.username%>&location=<%=hospital.location%>" method="post">
+            <input type="submit" value="ARCHIVE">
+        </form>
+        
+        <form action="/archiveHospital" method="post">
+            <input type="submit" value="Return to Hospital List">
+        </form>
+    </main>
+
+</body>
