@@ -37,6 +37,22 @@ public class DataTasks {
         }
     }
 
+    public static void createReview(String username, String hospital, String review) {
+        try {
+            String temp = "http://10.0.2.2:3000/addReview?username=" + username +
+                    "&hospital=" + hospital + "&review=" + review;
+            System.out.println(temp);
+            URL url = new URL(temp);
+            ObjectWebTask task = new ObjectWebTask();
+            task.execute(url);
+            String success = task.get();
+            System.out.println(success);
+            return;
+        } catch (Exception e) {
+            throw new IllegalStateException();
+        }
+    }
+
     public static Person loginCheck(Person p) {
         String[] str = {p.getUsername(), p.getPassword()};
         return loginCheck(str);
@@ -99,6 +115,45 @@ public class DataTasks {
         }
     }
 
+    public static Review[] acquireReviews(String hospital) {
+        try {
+            String input = "http://10.0.2.2:3000/reviews?hospital="+hospital;
+            System.out.println(input);
+            URL url = new URL(input);
+            WriterWebTask task = new WriterWebTask();
+            task.execute(url);
+            Review[] success = task.get();
+            if (success == null) {
+                return new Review[0];
+            } else {
+                return success;
+            }
+        }
+        catch (Exception e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    public static CompletedProcedure[] acquireCompleted(String username, String hospital) {
+        try {
+            String input = "http://10.0.2.2:3000/allDoneProcedures?username="+username+
+                    "&hospital="+hospital;
+            System.out.println(input);
+            URL url = new URL(input);
+            CompleteProcedureWebTask task = new CompleteProcedureWebTask();
+            task.execute(url);
+            CompletedProcedure[] success = task.get();
+            if (success == null) {
+                return new CompletedProcedure[0];
+            } else {
+                return success;
+            }
+        }
+        catch (Exception e) {
+            throw new IllegalStateException();
+        }
+    }
+
     public static VaccineInfo[] getVaccineInfo() {
         try {
             VaccineInfoWebTask task = new VaccineInfoWebTask();
@@ -116,6 +171,9 @@ public class DataTasks {
         try {
             if (str == null) {
                 return null;
+            }
+            if (str.equalsIgnoreCase("NotSet") || str.equals("")) {
+                return new Date();
             }
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             Date date = formatter.parse(str.replaceAll("Z$", "+0000"));

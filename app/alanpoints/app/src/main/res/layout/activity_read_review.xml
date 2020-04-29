@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <androidx.constraintlayout.widget.ConstraintLayout tools:context=".ReadReviewActivity" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    -<LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" tools:layout_editor_absoluteY="59dp" tools:layout_editor_absoluteX="0dp" android:orientation="vertical" android:gravity="center">
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="50dp" android:text="Review" android:id="@+id/mainText"/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="20dp" android:text="Hospital" android:id="@+id/hospitalText"/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="20dp" android:text="Writer" android:id="@+id/writerText"/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="20dp" android:text=""/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="20dp" android:text="review" android:id="@+id/reviewText"/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="20dp" android:text=""/>
+
+    <TextView android:layout_height="wrap_content" android:layout_width="match_parent" android:gravity="center" android:textSize="20dp" android:text="This user has done the following procedures here: "/>
+
+    <LinearLayout android:layout_height="match_parent" android:layout_width="match_parent" tools:layout_editor_absoluteY="59dp" tools:layout_editor_absoluteX="0dp" android:orientation="vertical" android:gravity="center" android:id="@+id/myLayout"> </LinearLayout>
+
+    <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:textSize="24sp" android:text="More reviews for this" android:id="@+id/reviewButton" android:onClick="reviewClick"/>
+
+    <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:textSize="24sp" android:text="Go to home" android:id="@+id/backButton" android:onClick="backClick"/>
+
+</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

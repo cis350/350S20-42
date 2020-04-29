@@ -72,6 +72,13 @@
             android:text="View/Add Travel"
             android:onClick="travelClick"
             android:textSize="24sp" />
+        <Button android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="24sp"
+            android:onClick="reviewClick"
+            android:text="Reviews"
+            android:id="@+id/reviewButton"/>
+
 
 
         <Button

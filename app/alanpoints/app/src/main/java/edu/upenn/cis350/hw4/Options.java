@@ -87,6 +87,13 @@ public class Options extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void reviewClick(View v) {
+        System.out.println("HEHEHE");
+        Intent i = new Intent(this, HospitalForReviewActivity.class);
+        i.putExtra("data", data);
+        startActivity(i);
+    }
+
     public void travelClick(View v) {
         System.out.println("HEHEHE");
         Intent i = new Intent(this, ViewTravelActivity.class);

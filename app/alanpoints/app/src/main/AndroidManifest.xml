@@ -13,7 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddTravelActivity"></activity>
+        <activity android:name=".ReadReviewActivity"></activity>
+        <activity android:name=".PersonForReviewActivity" />
+        <activity android:name=".ReviewSelectActivity" />
+        <activity android:name=".WriteReviewActivity" />
+        <activity android:name=".HospitalForReviewActivity" />
+        <activity android:name=".AddTravelActivity" />
         <activity android:name=".ViewTravelActivity" />
         <activity android:name=".VaccineInfoActivity" />
         <activity android:name=".AllVaccinesActivity" />
