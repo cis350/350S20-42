@@ -14,7 +14,8 @@ Summary of files and what they are:
 */views/* -> Contains a range of ejs files that switch the pages of the website. Has both user dashboard pages and admin dashboard pages.
 
 ## Mobile Application
-		
+Summary of files and what they are:
+
 *index.js* -> This is the main javascript file that uses node express to connect to the mobile app.
 	
 app.zip -> Contains the files which fully run the Android app
@@ -28,9 +29,9 @@ app.zip -> Contains the files which fully run the Android app
 install a mongodb on your computer like the node-setup.pdf says under project files on canvas. Create a folder for the data for your database to go
 
 under the /bin folder of your mongodb folder (what you downloaded) type:
-'''bash
+```bash
 ./mongod --dbpath=
-'''
+```
 and then add the exact path to that folder for the data that you created before
 
 Then, in a different tab on terminal or command line, navigate to the folder containing my files from git. Make sure you install node into these folders following the node-setup.pdf again. Then type
