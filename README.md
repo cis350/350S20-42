@@ -1,10 +1,12 @@
 **Vaccine Scheduling Application README**
 
-summary of files and what they are:
+Summary of files and what they are:
 
 mainLogin.js -> This is the main javascript file that uses node express to connect and to load the website up.  
-	*important* it has a variable called currentUser that holds the User object of the user who logged in after someone logged in
-	TODO: forgot to change currentUser to null once someone logged out. also to add functionality to the adding staff to a hospital form.
+	
+*important* it has a variable called currentUser that holds the User object of the user who logged in after someone logged in
+ODO: forgot to change currentUser to null once someone logged out. also to add functionality to the adding staff to a hospital form.
+
 
 User.js -> This is the schema for the database. It contains structures used in both the mobile app and website
 		
