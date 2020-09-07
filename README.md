@@ -34,13 +34,13 @@ under the /bin folder of your mongodb folder (what you downloaded) type:
 and then add the exact path to that folder for the data that you created before
 
 Then, in a different tab on terminal or command line, navigate to the folder containing my files from git. Make sure you install node into these folders following the node-setup.pdf again. Then type
-'''bash
+```bash
 node mainLogin.js
-'''
+```
 to run the website or
-'''bash
+```bash
 node index.js
-'''
+```
 to start running the android app
 
 For the website, if you then go to a browser and type http://localhost:3000 , the login screen should show up, but note that accounts are only intended to be created on the Android app.
