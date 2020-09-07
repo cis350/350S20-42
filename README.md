@@ -26,15 +26,15 @@ app.zip -> Contains the files which fully run the Android app
 
 ## Running the Program
 
-install a mongodb on your computer like the node-setup.pdf says under project files on canvas. Create a folder for the data for your database to go
+Install a MongoDB on your computer like the node-setup.pdf says under project files on canvas. Create a folder for the data for your database to go
 
 under the /bin folder of your mongodb folder (what you downloaded) type:
 ```bash
 ./mongod --dbpath=
 ```
-and then add the exact path to that folder for the data that you created before
+and then add the exact path to that folder for the data that you created before. Note there are commented out portions that can access an Atlas database. For now we aren't using this, but it can be accessed if desired.
 
-Then, in a different tab on terminal or command line, navigate to the folder containing my files from git. Make sure you install node into these folders following the node-setup.pdf again. Then type
+In a different tab on terminal or command line, navigate to the folder containing my files from git. Make sure you install Node.js into these folders following the node-setup.pdf again. Then type
 ```bash
 node mainLogin.js
 ```
@@ -47,8 +47,6 @@ to start running the android app
 For the website, if you then go to a browser and type http://localhost:3000 , the login screen should show up, but note that accounts are only intended to be created on the Android app.
 
 For the Android app, unzip the app.zip file and open the file produced in AndroidStudio. Wait for the gradle to compile everything, and then run the program on a valid configuration. Make sure that the index file was run prior to running the app, as this is required in order to have access to the database.
-
-Note there are commented out portions that can access an Atlas database. For now we aren't using this, but it can be accessed if desired.
 
 If you have questions or problems, feel free to reach out to us. 
 -Morgan, Alan, Ali 
